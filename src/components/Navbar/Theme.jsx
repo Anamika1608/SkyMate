@@ -12,7 +12,7 @@ const ThemeSwitcher = () => {
   };
 
   return (
-    <label className="swap swap-rotate mr-4">
+    <label className="swap swap-rotate text-lg sm:text-xl">
       <input 
         type="checkbox" 
         className="theme-controller" 

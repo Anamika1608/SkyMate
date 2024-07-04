@@ -1,26 +1,16 @@
 import ThemeSwitcher from "./Theme"
 
 export default function Navbar() {
-    return (
-        <div className="shadow-md flex flex-wrap p-4 bg-[#d9f0ff]">
-            <a className="text-3xl ml-4 font-medium text-blue-700" href="/">SkyMate</a>
-            <label className="input input-bordered flex items-center gap-2 mx-auto">
-                <input type="text" className="grow" placeholder="Enter Location" />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                  className="h-4 w-4 opacity-70"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </label>
-            <ThemeSwitcher/>
-        </div>
-    )
+  return (
+    <div className="shadow-md flex flex-wrap items-center p-3 bg-[#d9f0ff] ">
+      <a className="text-lg font-medium text-blue-700 sm:text-3xl sm:ml-2" href="/">SkyMate</a>
+      <div className="ml-auto flex items-center mx-0  sm:mx-auto ">
+        <input type="text" placeholder="Enter location" className="text-center p-1 rounded-xl w-36 text-base sm:p-2 sm:rounded-2xl sm:w-auto" />
+        <button className="btn ml-2 w-20 pt-0 pl-0 pr-0 pl-0 rounded-xl hover:bg-[#FDE4C0] text-sm sm:text-base sm:w-20">Search</button>
+      </div>
+      <div className="p-2 hidden sm:block">
+        <ThemeSwitcher />
+      </div>
+    </div>
+  )
 }
-
