@@ -1,13 +1,11 @@
-import Hero from "../components/Hero/Hero"
-import Unique from "../components/Unique/Unique"
+import Hero from "../../components/Hero/Hero.jsx"
+import Features from "../Features/Features.jsx"
 
 export default function HomePage() {
     return (
         <div className="bg-[#f0f0f0]">
             <Hero />
-            <Unique/>
+            <Features/>
         </div>
-
-
     )
 }
