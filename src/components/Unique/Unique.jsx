@@ -10,7 +10,7 @@ const features = [
   {
     icon: '🫁',
     title: 'Health Alerts',
-    description: 'Get info about affecting allergies, air quality, and overall wellness.'
+    description: 'Get info about affecting allergies, air quality, and overall wellness according to weather conditions.'
   },
   {
     icon: '💡',

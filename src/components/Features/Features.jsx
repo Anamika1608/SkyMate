@@ -1,5 +1,5 @@
-import {WobbleCardDemo} from "../../components/Unique/Unique.jsx"
-import {FlipWordsDemo} from "../../components/Unique/Heading.jsx"
+import {WobbleCardDemo} from "../Unique/Unique.jsx"
+import {FlipWordsDemo} from "../Unique/Heading.jsx"
 
 export default function Features(){
     return (
