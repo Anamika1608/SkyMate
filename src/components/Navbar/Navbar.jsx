@@ -16,7 +16,7 @@ export default function Navbar() {
 
   return (
     <div className="shadow-md flex flex-wrap items-center p-1 bg-[#d9f0ff] ">
-      <a className="text-lg font-medium text-blue-700 sm:text-3xl sm:ml-2" href="/">WeatherWise</a>
+      <a className="text-lg font-medium text-blue-700 sm:text-3xl sm:ml-2" href="/">SkyMate</a>
       <div className="ml-auto flex items-center mx-0  sm:mx-auto ">
         <form action="/weather">
         <input type="text" placeholder="Enter location" className="text-center p-1 rounded-xl w-36 text-base sm:p-2 sm:rounded-2xl sm:w-auto sm:text-base" onChange={SearchTracker} value={search}/>
