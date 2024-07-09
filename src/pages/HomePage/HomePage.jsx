@@ -3,7 +3,7 @@ import Features from "../../components/Features/Features.jsx"
 
 export default function HomePage() {
     return (
-        <div className="bg-[#f0f0f0]">
+        <div className="dark:bg-[#02367b] ">
             <Hero />
             <Features/>
         </div>

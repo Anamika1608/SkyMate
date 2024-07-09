@@ -27,7 +27,7 @@ const features = [
 
 export function WobbleCardDemo() {
   return (
-    <div className="sm:flex gap-4 sm:max-w-7xl mx-auto w-full h-10">
+    <div className="sm:flex gap-4 sm:max-w-7xl mx-auto w-full ">
       {features.map((feature, index) => (
         <WobbleCard containerClassName="col-span-1 sm:min-h-[300px] mb-4 " >
           <div className="text-4xl pb-3 -mt-9">{feature.icon}</div>
