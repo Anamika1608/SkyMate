@@ -18,9 +18,9 @@ export default function Navbar() {
     <div className="shadow-md flex flex-wrap items-center p-1 bg-[#d9f0ff] ">
       <a className="text-lg font-medium text-blue-700 sm:text-3xl sm:ml-2" href="/">SkyMate</a>
       <div className="ml-auto flex items-center mx-0  sm:mx-auto ">
-        <form action="/weather">
+        <form >
         <input type="text" placeholder="Enter location" className="text-center p-1 rounded-xl w-36 text-base sm:p-2 sm:rounded-2xl sm:w-auto sm:text-base" onChange={SearchTracker} value={search}/>
-        <button className="btn bg-white ml-2 w-20 pt-0 pl-0 pr-0 pl-0 rounded-xl hover:bg-[#FFF0DA] text-sm sm:text-base sm:w-20" onClick={GetData}>Search</button>
+        <button className="btn bg-white ml-2 w-20 pt-0 pl-0 pr-0 pl-0 rounded-xl hover:bg-[#FFF0DA] text-sm sm:text-base sm:w-20" >Search</button>
         </form>
       </div>
       <div className="p-2 hidden sm:block">
