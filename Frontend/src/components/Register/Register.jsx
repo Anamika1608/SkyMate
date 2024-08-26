@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import  useAuth  from '../../context/AuthContext';
 
 function Register() {
-  
+  const {setIsLoggedIn} = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const registerUser = async () => {
     try {
@@ -15,6 +17,11 @@ function Register() {
       }, {
         withCredentials: true
       });
+
+      if (response) {
+        setIsLoggedIn(true);
+        navigate('/weather-gallery');
+      }
       console.log("User registered successfully:", response.data);
 
     } catch (error) {
@@ -30,11 +37,11 @@ function Register() {
 
       <input type="password" name='password' placeholder='write password' onChange={(e) => setPassword(e.target.value)} value={password} />
 
-      <Link to= '/weather-gallery'>
-        <button onClick={registerUser}>Submit</button>
-      </Link>
-      
-    
+
+      <button onClick={registerUser}>Submit</button>
+
+
+
 
     </div>
   )

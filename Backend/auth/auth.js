@@ -71,31 +71,56 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.get("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   try {
-    const token = req.cookies.token;
-    const decoded = jwt.verify(token, Jwt_Secret);
-    console.log(decoded);
+    const { email, password } = req.body;
     
-    const userId = decoded._id;
-    const user = await User.findById(userId);
-    if (!user) res.send("user not found");
+    // First, find the user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
 
-    res.send("logged in");
-    console.log(user);
+    // Check if the password is correct
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // If credentials are correct, create a token
+    const token = jwt.sign({ id: user._id }, Jwt_Secret);
+    
+    // Send the token as a cookie
+    res.cookie("token", token, { httpOnly: true });
+    
+    // Send a success response
+    res.status(200).json({ message: "Logged in successfully", user: { email: user.email } });
+
+  } catch (error) {
+    res.status(500).json({ message: "Error in login", error: error.message });
   }
+});
 
-  catch (error) {
-    res.status(404).send("error in fetching details");
-  }
-})
-
-app.post("/logout", (req, res) => {
+app.get("/logout", (req, res) => {
   res.clearCookie("token")
   res.json({
     message: "logged-out"
   })
 })
+
+app.get("/check-auth", (req, res) => {
+  const token = req.cookies.token;
+  if (token) {
+    try {
+      jwt.verify(token, Jwt_Secret);
+      res.json({ isLoggedIn: true });
+    } catch (error) {
+      res.json({ isLoggedIn: false });
+    }
+  } else {
+    res.json({ isLoggedIn: false });
+  }
+});
 
 app.listen(3000, () => {
   console.log("App is listening on port 3000");
