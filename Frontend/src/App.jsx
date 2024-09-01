@@ -6,10 +6,9 @@ import { Outlet } from "react-router-dom"
 // import { ThemeProvider } from './context/theme';
 import { useState, useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
-
+ 
   const [themeMode, setThemeMode] = useState("light");
 
   const darkTheme = () => {
@@ -24,8 +23,8 @@ function App() {
     document.querySelector('html').classList.add(themeMode);
   }, [themeMode])
 
-  return (
-    <GoogleOAuthProvider clientId='1084852529883-rid09673rjsvcq40gbrl472rsbjs7s0p.apps.googleusercontent.com'>
+  
+  return ( 
       <AuthProvider>
         <div >
           <Navbar />
@@ -33,8 +32,6 @@ function App() {
           <Footer />
         </div>
       </AuthProvider>
-    </GoogleOAuthProvider>
-
 
     // <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
 

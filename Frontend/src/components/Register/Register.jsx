@@ -5,33 +5,36 @@ import  useAuth  from '../../context/AuthContext';
 
 function Register() {
   const {setIsLoggedIn} = useAuth();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const registerUser = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/register", {
-        email,
-        password
-      }, {
-        withCredentials: true
-      });
-
-      if (response) {
+      const response = await axios.post(
+        "http://localhost:3000/register",
+        { name, email, password },
+        { withCredentials: true }
+      );
+  
+      if (response.status === 201) {  // Ensure it's checking for success status
         setIsLoggedIn(true);
-        navigate('/weather-gallery');
+        navigate("/weather-gallery");
+      } else {
+        console.error("Unexpected response:", response);
       }
-      console.log("User registered successfully:", response.data);
-
     } catch (error) {
-      console.error("Error registering user:", error.response.data);
+      console.error("Error registering user:", error.response?.data || error.message);
     }
   };
+  
 
   return (
     <div>
       <div>create account</div>
+
+      <input type="text" name='name' placeholder='write name' onChange={(e) => setName(e.target.value)} value={name} />
 
       <input type="text" name='email' placeholder='write email' onChange={(e) => setEmail(e.target.value)} value={email} />
 

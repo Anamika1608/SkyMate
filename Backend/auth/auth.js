@@ -4,8 +4,10 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import oauth2client from './googleConfig.js'
+import axios from 'axios';
 
-const Jwt_Secret = "mystery";
+const JWT_SECRET = 'mystery';
 
 main().catch(err => console.log(err));
 
@@ -15,6 +17,10 @@ async function main() {
 }
 
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -47,7 +53,7 @@ app.use(cors({
 
 
 app.post("/register", async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   console.log(req.body);
 
   try {
@@ -57,10 +63,10 @@ app.post("/register", async (req, res) => {
     }
     console.log("inside try catch");
 
-    const newUser = new User({ email, password });
+    const newUser = new User({ name, email, password });
     await newUser.save();
 
-    const token = jwt.sign({ id: newUser._id }, Jwt_Secret);
+    const token = jwt.sign({ id: newUser._id }, JWT_SECRET);
 
     res.cookie("token", token, { httpOnly: true });
     res.status(201).json({ message: "User registered successfully" });
@@ -74,32 +80,39 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    
-    // First, find the user by email
+
+    // Validate request fields
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // Check if the password is correct
+    // Compare passwords
+    console.log("comparing pw");
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // If credentials are correct, create a token
-    const token = jwt.sign({ id: user._id }, Jwt_Secret);
-    
-    // Send the token as a cookie
+    // Generate JWT token
+    console.log("generating token");
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "12h" });
     res.cookie("token", token, { httpOnly: true });
-    
-    // Send a success response
-    res.status(200).json({ message: "Logged in successfully", user: { email: user.email } });
+
+    // Respond with success
+    res.status(200).json({ message: "Logged in successfully", user: { name: user.name, email: user.email } });
 
   } catch (error) {
-    res.status(500).json({ message: "Error in login", error: error.message });
+    console.error("Login error:", error);  // Log the specific error
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
+
 
 app.get("/logout", (req, res) => {
   res.clearCookie("token")
@@ -108,19 +121,58 @@ app.get("/logout", (req, res) => {
   })
 })
 
-app.get("/check-auth", (req, res) => {
-  const token = req.cookies.token;
-  if (token) {
-    try {
-      jwt.verify(token, Jwt_Secret);
-      res.json({ isLoggedIn: true });
-    } catch (error) {
-      res.json({ isLoggedIn: false });
+app.post("/googleLogin", async (req, res) => {
+  try {
+    const { code } = req.query;
+    if (!code) {
+      throw new Error("Authorization code not provided");
     }
-  } else {
-    res.json({ isLoggedIn: false });
+
+    const googleRes = await oauth2client.getToken(code); // Make sure this line is correctly awaiting the response
+    oauth2client.setCredentials(googleRes.tokens);
+
+    console.log(googleRes.tokens.access_token);
+    // Fetch user data from Google API
+    const userRes = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+    );
+
+    const { email, name } = userRes.data;
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({ name, email, password: "defaultPassword" }); // Modify as necessary, ensure 'password' field is handled properly
+      await user.save();
+    }
+
+    const token = jwt.sign({ id: user._id }, JWT_SECRET);
+    res.cookie("token", token, { httpOnly: true });
+    
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.log(error);
+    console.log("Error during Google login:", error.message);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 });
+
+// app.get("/check-auth", (req, res) => {
+//   const token = req.cookies.token;
+//   if (token) {
+//     try {
+//       jwt.verify(token, JWT_SECRET);
+//       res.json({ isLoggedIn: true });
+//     } catch (error) {
+//       res.json({ isLoggedIn: false });
+//     }
+//   } else {
+//     res.json({ isLoggedIn: false });
+//   }
+// });
+
 
 app.listen(3000, () => {
   console.log("App is listening on port 3000");
