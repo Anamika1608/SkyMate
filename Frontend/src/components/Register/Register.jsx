@@ -28,13 +28,14 @@ export default function Register() {
         console.error("Unexpected response:", response);
       }
     } catch (error) {
+      console.log(error);
       console.error("Error registering user:", error.response?.data || error.message);
     }
   };
 
   return (
     <div className="flex items-center justify-center p-4">
-      <div className="w-full lg:w-3/6 p-10">
+      <div className="w-full  lg:w-2/6 p-10">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>
           <p className="text-gray-600 mt-2">Please register to get started</p>

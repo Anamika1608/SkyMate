@@ -1,8 +1,12 @@
-import mongoose from "mongoose";
-import express from "express";
-main().catch(err => console.log(err));
+import { fileURLToPath } from 'url';
+import path from 'path';
+import dotenv from 'dotenv';
 
-async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/test');
-}
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Load environment variables
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+
+// Import and run your server
+import('./utils/server.js');
