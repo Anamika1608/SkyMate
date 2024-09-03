@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
  
 import authRoutes from "../routes/authRoute.js";
-
+import postRoutes from "../routes/postRoute.js"
 const port = process.env.PORT;
 
 async function main() {
@@ -23,6 +23,7 @@ app.use(cors({
 }));
 
 app.use(authRoutes);
+app.use(postRoutes);
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);

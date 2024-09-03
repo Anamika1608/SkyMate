@@ -18,6 +18,7 @@ import Register from './components/Register/Register.jsx';
 import Login from './components/login/login.jsx';
 import Gallery from './components/Gallery/Gallery.jsx';
 import { PrivateRoute } from './PrivateRoute.jsx';
+import UploadForm from './components/Upload/UploadForm.jsx';
 
 const GoogleAuthWrapper = ()=>{
   return(
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
           <Gallery/>
         </PrivateRoute>
       }/>
+      <Route path='upload' element={<UploadForm/>}/>
       <Route />
       {/* <Route loader={WeatherGen}  path='weather' element={<WeatherPage/>} /> */}
     </Route>

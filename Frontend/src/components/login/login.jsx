@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import useAuth from '../../context/AuthContext';
-import { Eye, EyeOff, Cloud, Sun, Wind } from 'lucide-react';
 
 export default function Login() {
   const { setIsLoggedIn } = useAuth();
@@ -47,18 +46,6 @@ export default function Login() {
 
   return (
     <div className=" flex items-center justify-center p-4">
-      
-        {/* <div className="w-2/3 p-10 bg-indigo-600 text-white relative hidden lg:block">
-          <h1 className="text-4xl font-bold mb-6">WeatherWise</h1>
-          <p className="text-xl mb-8">Explore the World's Weather Patterns with Expert Insights</p>
-          <div className="absolute bottom-0 left-0 right-0 p-12">
-            <div className="flex items-center space-x-4 pt-44">
-              <Cloud className="w-12 h-12" />
-              <Sun className="w-16 h-16 text-yellow-300" />
-              <Wind className="w-12 h-12" />
-            </div>
-          </div>
-        </div> */}
         <div className="w-full lg:w-2/6 p-10">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-800">Welcome Back :)</h2>
