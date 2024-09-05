@@ -20,7 +20,7 @@ function Gallery() {
   }, []);
 
   const openForm = () => {
-    navigate('/post');
+    navigate('/upload');
   };
 
   return (

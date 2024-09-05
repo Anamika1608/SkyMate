@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import useAuth from '../../context/AuthContext';
+import {Eye , EyeOff} from 'lucide-react';
 
 export default function Login() {
   const { setIsLoggedIn } = useAuth();

@@ -1,44 +1,52 @@
 import React, { useState } from 'react';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function UploadForm() {
   const navigate = useNavigate();
   const [caption, setCaption] = useState('');
-  const [url, setUrl] = useState({ image: '' }); 
+  const [file, setFile] = useState(null);
 
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
+  const handleChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
-  const handleChange = async (e) => {
-    const file = e.target.files[0];
-    const Base64 = await convertToBase64(file);
-    setUrl((prevUrl) => ({ ...prevUrl, image: Base64 }));
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'ml_default');
+
+    try {
+      console.log("before cloudinary req");
+      const response = await axios.post(
+        'https://api.cloudinary.com/v1_1/curiousdevs/image/upload',
+        formData
+      );
+
+      console.log(response.data.secure_url);
+      return response.data.secure_url;
+    } catch (error) {
+      console.error('Error uploading to Cloudinary:', error);
+      throw new Error('Failed to upload image');
+    }
   };
+
 
   const submitPost = async () => {
     try {
-      console.log('Submitting post with URL:', url);
+      const imageUrl = await uploadToCloudinary(file);
+
       const response = await axios.post(
         'http://localhost:3000/upload',
         {
-          image: url.image, 
+          image: imageUrl,
           caption,
         },
         {
           withCredentials: true,
         }
       );
+
       if (response) {
         console.log('Upload successful');
         navigate('/weather-gallery');

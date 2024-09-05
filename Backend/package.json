@@ -5,16 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server" : "nodemon index.js"
+    "server": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "description": "",
-  "devDependencies": {},
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
     "axios": "^1.7.4",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.4.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
