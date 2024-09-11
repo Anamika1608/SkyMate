@@ -22,10 +22,10 @@ function UploadForm() {
         'https://api.cloudinary.com/v1_1/curiousdevs/image/upload',
         formData
       );
-
       console.log(response.data.secure_url);
       return response.data.secure_url;
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error uploading to Cloudinary:', error);
       throw new Error('Failed to upload image');
     }
