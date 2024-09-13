@@ -11,8 +11,10 @@ const Dashboard = () => {
         const response = await axios.get('http://localhost:3000/get_user', {
           withCredentials: true,
         });
+        console.log(response.data);
         setUser(response.data);
-      } catch (err) {
+      } 
+      catch (err) {
         console.error('Error fetching user:', err);
         setError(err.response?.data?.message || 'An error occurred');
       }
@@ -27,6 +29,7 @@ const Dashboard = () => {
   return (
     <div>
       <h1>Welcome, {user.name}!</h1>
+
       {/* Add more dashboard content here */}
     </div>
   );

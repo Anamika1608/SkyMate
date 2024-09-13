@@ -8,7 +8,7 @@ export default function Navbar() {
   const [search, setSearch] = useState("");
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [profilePicture, setProfilePicture] = useState(
-    "https://via.placeholder.com/40" // Default profile picture
+    
   );
 
   useEffect(() => {
@@ -59,8 +59,7 @@ export default function Navbar() {
           Login
         </button>
 
-        {/* Profile */}
-
+        
         {isLoggedIn && (
           <div
             className="ml-4 rounded-full h-10 w-10 bg-yellow-200 cursor-pointer overflow-hidden"
@@ -73,6 +72,7 @@ export default function Navbar() {
             />
           </div>
         )}
+        
       </div>
     </div>
   );

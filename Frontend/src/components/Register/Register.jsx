@@ -41,37 +41,37 @@ export default function Register() {
           <p className="text-gray-600 mt-2">Please register to get started</p>
         </div>
         <form onSubmit={registerUser}>
-          <div className="mb-6">
+          <div className="mb-4">
             <label htmlFor="name" className="block text-gray-700 text-sm font-semibold mb-2">Full Name</label>
             <input
               type="text"
               id="name"
               className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:border-indigo-500 focus:bg-white focus:outline-none"
-              placeholder="John Doe"
+              placeholder=""
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">Email Address</label>
             <input
               type="email"
               id="email"
               className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:border-indigo-500 focus:bg-white focus:outline-none"
-              placeholder="you@example.com"
+              placeholder=""
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
-          <div className="mb-6 relative">
+          <div className="mb-4 relative">
             <label htmlFor="password" className="block text-gray-700 text-sm font-semibold mb-2">Password</label>
             <input
               type={showPassword ? "text" : "password"}
               id="password"
               className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 focus:border-indigo-500 focus:bg-white focus:outline-none pr-10"
-              placeholder="Enter your password"
+              placeholder=""
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -85,7 +85,7 @@ export default function Register() {
             </button>
           </div>
           <button
-            className="w-full bg-indigo-600 text-white rounded-lg px-4 py-3 mt-6 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-200"
+            className="w-full bg-indigo-600 text-white rounded-lg px-4 py-3 mt-4 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-200"
             type="submit"
           >
             Create Account
