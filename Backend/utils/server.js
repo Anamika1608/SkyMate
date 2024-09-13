@@ -6,6 +6,8 @@ import cors from "cors";
 import authRoutes from "../routes/authRoute.js";
 import postRoutes from "../routes/postRoute.js"
 import userRoutes from "../routes/userRoutes.js"
+import commentRoutes from "../routes/commentRoute.js" 
+
 const port = process.env.PORT;
 
 async function main() {
@@ -26,6 +28,7 @@ app.use(cors({
 app.use(authRoutes);
 app.use(postRoutes);
 app.use(userRoutes);
+app.use(commentRoutes);
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);

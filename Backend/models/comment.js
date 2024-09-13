@@ -1,14 +1,23 @@
-const { string, date } = require("joi");
 import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema({
-    comment : String,
-    created_at : {
-        type : Date,
-        default : Date.now
+    commentor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    comment: String,
+    postId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post", 
+        required: true,
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
     }
 });
 
-const comment = mongoose.model("comment",commentSchema);
+const Comment = mongoose.model("Comment", commentSchema);
 
-export default comment;
+export default Comment;

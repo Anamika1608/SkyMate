@@ -14,10 +14,8 @@ function Gallery() {
         const response = await axios.get('http://localhost:3000/get_user', {
           withCredentials: true,
         });
-        console.log(response.data);
         setUser(response.data);
       } catch (err) {
-        console.error('Error fetching user:', err);
         setError(err.response?.data?.message || 'An error occurred');
       }
     };
@@ -31,7 +29,6 @@ function Gallery() {
         const response = await axios.get('http://localhost:3000/posts');
         setPosts(response.data);
       } catch (error) {
-        console.error('Error fetching posts:', error);
         setError('Failed to fetch posts');
       }
     };
@@ -43,24 +40,33 @@ function Gallery() {
     navigate('/upload');
   };
 
+  const eachPost = (post) => {
+    navigate(`/post/${post._id}`, { state: { post } });
+  };
+
   return (
     <div className="gallery-container">
       <button onClick={openForm}>Add Yours</button>
 
       {error && <p className="error-message">{error}</p>}
- 
-      <div className="posts-grid">
-        {posts.map((post, index) => (
-          <div key={index} className="post-card">
-            <div className='flex'>
-            <img src={post.author?.picture || 'https://via.placeholder.com/40'} alt="Author" className="h-10 w-10 rounded-full object-cover" />
-            <div>{post.author?.name || 'Anonymous'}</div>
+
+      <div className="">
+        {posts.map((post) => (
+          <div key={post._id}>
+            <div className="flex">
+              <img
+                src={post.author?.picture || 'https://via.placeholder.com/40'}
+                alt="Author"
+                className="h-10 w-10 rounded-full object-cover "
+               
+              />
+
+              <div>{post.author?.name || 'Anonymous'}</div>
             </div>
 
-            <img src={post.image} alt="Uploaded" className="h-54 w-54 " />
+            <img src={post.image} alt="Uploaded" className="h-44 w-44 cursor-pointer" onClick={() => eachPost(post)} />
 
             <p className="post-caption">{post.caption}</p>
-            
           </div>
         ))}
       </div>
