@@ -45,28 +45,48 @@ function Gallery() {
   };
 
   return (
-    <div className="gallery-container">
-      <button onClick={openForm}>Add Yours</button>
+    <div className="p-4">
+      {/* <button
+        onClick={openForm}
+        className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-indigo-500 text-white py-3 px-6 rounded-lg shadow-lg transform transition duration-500 hover:scale-105 mb-6"
+      >
+        Add Yours
+      </button> */}
 
-      {error && <p className="error-message">{error}</p>}
+      {error && <p className="text-red-500 text-center font-semibold">{error}</p>}
 
-      <div className="">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post) => (
-          <div key={post._id}>
-            <div className="flex">
+          <div
+            key={post._id}
+            className="relative bg-white shadow-lg rounded-xl overflow-hidden transform hover:-translate-y-2 transition-all duration-300"
+          >
+            <div className="flex items-center p-3 bg-gray-50 border-b border-gray-200">
               <img
                 src={post.author?.picture || 'https://via.placeholder.com/40'}
                 alt="Author"
-                className="h-10 w-10 rounded-full object-cover "
-               
+                className="h-12 w-12 rounded-full object-cover border-2 border-indigo-500"
               />
-
-              <div>{post.author?.name || 'Anonymous'}</div>
+              <div className="ml-4 text-gray-700 font-semibold text-xl">
+                {post.author?.name || 'Anonymous'}
+                {post.author?.verified && (
+                  <span className="ml-2 text-sm text-indigo-600 font-bold bg-indigo-100 px-2 py-1 rounded-md">
+                    Verified
+                  </span>
+                )}
+              </div>
             </div>
 
-            <img src={post.image} alt="Uploaded" className="h-44 w-44 cursor-pointer" onClick={() => eachPost(post)} />
+            <img
+              src={post.image}
+              alt="Uploaded"
+              className="h-48 w-full object-cover cursor-pointer hover:opacity-90 transition-opacity duration-300"
+              onClick={() => eachPost(post)}
+            />
 
-            <p className="post-caption">{post.caption}</p>
+            <div className="p-4 bg-blue-50">
+              <p className="text-blue-700 font-medium text-lg tracking-wide">{post.caption}</p>
+            </div>
           </div>
         ))}
       </div>
