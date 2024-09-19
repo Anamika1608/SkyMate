@@ -34,6 +34,7 @@ function UploadForm() {
 
   const submitPost = async () => {
     try {
+      console.log(file);
       const imageUrl = await uploadToCloudinary(file);
 
       const response = await axios.post(

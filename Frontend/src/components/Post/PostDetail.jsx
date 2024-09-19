@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -11,18 +11,20 @@ function PostDetail() {
   const [replyingTo, setReplyingTo] = useState(null);
   const [reply, setReply] = useState('');
 
+  const fetchComments = useCallback(async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/getComment?postId=${id}`);
+      console.log('Fetched comments:', response.data);
+      setAllComments(response.data);
+    } catch (error) {
+      console.error('Failed to fetch comments:', error);
+      setError('Failed to fetch the comments');
+    }
+  }, [id]);
+
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3000/getComment?postId=${id}`);
-        setAllComments(response.data);
-      } catch (error) {
-        console.log(error);
-        setError('Failed to fetch the comments');
-      }
-    };
     fetchComments();
-  }, [id, comment, reply]);
+  }, [fetchComments]);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -30,6 +32,7 @@ function PostDetail() {
         const response = await axios.get(`http://localhost:3000/posts/${id}`);
         setPost(response.data);
       } catch (error) {
+        console.error('Failed to fetch post:', error);
         setError('Failed to fetch the post');
       }
     };
@@ -44,31 +47,52 @@ function PostDetail() {
         { comment, postId: id },
         { withCredentials: true }
       );
+      console.log('New comment added:', response.data);
       const newComment = response.data.comment;
-      setPost((prevPost) => ({
-        ...prevPost,
-        comments: [...prevPost.comments, newComment],
-      }));
+      setAllComments(prevComments => [...prevComments, newComment]);
       setComment('');
+      fetchComments(); // Fetch all comments again to ensure consistency
     } catch (error) {
-      console.log('Error in saving comment', error);
+      console.error('Error in saving comment', error);
     }
   };
 
   const addReply = async (e) => {
     e.preventDefault();
+    const replyText = reply;
+    const commentId = replyingTo;
+
+    // Optimistic update
+    setAllComments(prevComments =>
+      prevComments.map(comment =>
+        comment._id === commentId
+          ? {
+            ...comment,
+            replies: [...(comment.replies || []), {
+              _id: Date.now(), // Temporary ID
+              reply: replyText,
+              replier: { name: 'You' } // Assume current user
+            }]
+          }
+          : comment
+      )
+    );
+
+    setReply('');
+    setReplyingTo(null);
+
     try {
       await axios.post(
         'http://localhost:3000/addReply',
-        { reply, commentId: replyingTo },
+        { reply: replyText, commentId },
         { withCredentials: true }
       );
-      setReply('');
-      setReplyingTo(null);
-      const updatedComments = await axios.get(`http://localhost:3000/getComment?postId=${id}`);
-      setAllComments(updatedComments.data);
+      // Fetch the updated comments to ensure consistency
+      fetchComments();
     } catch (error) {
-      console.log('Error in saving reply', error);
+      console.error('Error in saving reply', error);
+      // Revert the optimistic update on error
+      fetchComments();
     }
   };
 
@@ -82,58 +106,58 @@ function PostDetail() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-    {/* Post Section: Image on the left, Comments on the right */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Image and Post Details */}
-      <div className="bg-gray-100 shadow-lg rounded-lg p-6 flex flex-col items-center">
-        <div className="flex items-center mb-4">
-          <img
-            src={post.author?.picture || 'https://via.placeholder.com/40'}
-            alt="Author"
-            className="h-12 w-12 rounded-full border-2 border-indigo-400"
-          />
-          <div className="ml-4">
-            <p className="text-lg font-semibold">{post.author?.name || 'Anonymous'}</p>
-            <p className="text-gray-500 text-sm">Posted on {new Date(post.created_at).toDateString()}</p>
-          </div>
-        </div>
-        {/* Image */}
-        <img
-          src={post.image}
-          alt="Uploaded"
-          className="rounded-lg w-full object-cover shadow-md"
-        />
-        <p className="text-lg font-medium text-gray-700 mt-6">{post.caption}</p>
-      </div>
-  
-      {/* Comments Section */}
-      <div className="bg-gray-50 shadow-lg rounded-lg p-6" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-        <h2 className="text-2xl font-semibold mb-6">Comments</h2>
-  
-        {/* Add Comment Form */}
-        <div className="mb-6">
-          <form onSubmit={addComment} className="flex flex-col">
-            <textarea
-              placeholder="Write your comment here..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="border border-gray-300 rounded-md p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              rows={3}
+      {/* Post Section: Image on the left, Comments on the right */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Image and Post Details */}
+        <div className="bg-gray-100 shadow-lg rounded-lg p-6 flex flex-col items-center">
+          <div className="flex items-center mb-4">
+            <img
+              src={post.author?.picture || 'https://via.placeholder.com/40'}
+              alt="Author"
+              className="h-12 w-12 rounded-full border-2 border-indigo-400"
             />
-            <button
-              type="submit"
-              className="self-end bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition"
-            >
-              Submit
-            </button>
-          </form>
+            <div className="ml-4">
+              <p className="text-lg font-semibold">{post.author?.name || 'Anonymous'}</p>
+              <p className="text-gray-500 text-sm">Posted on {new Date(post.created_at).toDateString()}</p>
+            </div>
+          </div>
+          {/* Image */}
+          <img
+            src={post.image}
+            alt="Uploaded"
+            className="rounded-lg w-full object-cover shadow-md"
+          />
+          <p className="text-lg font-medium text-gray-700 mt-6">{post.caption}</p>
         </div>
+
+        {/* Comments Section */}
+        <div className="bg-gray-50 shadow-lg rounded-lg p-6" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+          <h2 className="text-2xl font-semibold mb-6">Comments</h2>
+
+          {/* Add Comment Form */}
+          <div className="mb-6">
+            <form onSubmit={addComment} className="flex flex-col">
+              <textarea
+                placeholder="Write your comment here..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="border border-gray-300 rounded-md p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                rows={3}
+              />
+              <button
+                type="submit"
+                className="self-end bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
 
           {/* List of Comments */}
           {allComments.length > 0 ? (
             allComments.map((comment) => (
               <div key={comment._id} className="mb-6">
-                {/* Main Comment with background */}
+                {/* Main Comment */}
                 <div className="bg-indigo-100 rounded-lg p-4 mb-2 shadow-md">
                   <div className="flex items-center mb-2">
                     <img
@@ -173,7 +197,7 @@ function PostDetail() {
                   </form>
                 )}
 
-                {/* Replies with Wire-Like Connection */}
+                {/* Replies*/}
                 {comment.replies?.length > 0 && (
                   <div className="ml-12 border-l-2 border-indigo-300 pl-4 mt-4">
                     {comment.replies.map((reply) => (
