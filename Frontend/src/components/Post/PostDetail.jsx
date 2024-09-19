@@ -48,30 +48,45 @@ function PostDetail() {
         { withCredentials: true }
       );
       console.log('New comment added:', response.data);
-      const newComment = response.data.comment;
-      setAllComments(prevComments => [...prevComments, newComment]);
-      setComment('');
-      fetchComments(); // Fetch all comments again to ensure consistency
+  
+      // // Optimistic update - but ensure placeholder data for commentor
+      // const newComment = {
+      //   ...response.data.comment,
+      //   commentor: {
+      //     name: 'You', 
+      //     picture: 'https://via.placeholder.com/40' 
+      //   }
+      // };
+      
+      // // Add new comment optimistically
+      // setAllComments(prevComments => [...prevComments, newComment]);
+      // setComment('');
+  
+      // Immediately fetch the latest comments after adding
+
+      fetchComments(); 
+      setComment("");
+    
     } catch (error) {
       console.error('Error in saving comment', error);
     }
   };
+  
 
   const addReply = async (e) => {
     e.preventDefault();
     const replyText = reply;
     const commentId = replyingTo;
 
-    // Optimistic update
     setAllComments(prevComments =>
       prevComments.map(comment =>
         comment._id === commentId
           ? {
             ...comment,
             replies: [...(comment.replies || []), {
-              _id: Date.now(), // Temporary ID
+              _id: Date.now(), 
               reply: replyText,
-              replier: { name: 'You' } // Assume current user
+              replier: { name: 'You' } 
             }]
           }
           : comment
@@ -87,11 +102,10 @@ function PostDetail() {
         { reply: replyText, commentId },
         { withCredentials: true }
       );
-      // Fetch the updated comments to ensure consistency
       fetchComments();
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error in saving reply', error);
-      // Revert the optimistic update on error
       fetchComments();
     }
   };
@@ -106,7 +120,7 @@ function PostDetail() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      {/* Post Section: Image on the left, Comments on the right */}
+      {/* Post Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Image and Post Details */}
         <div className="bg-gray-100 shadow-lg rounded-lg p-6 flex flex-col items-center">

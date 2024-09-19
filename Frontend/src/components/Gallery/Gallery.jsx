@@ -36,23 +36,13 @@ function Gallery() {
     fetchPosts();
   }, []);
 
-  const openForm = () => {
-    navigate('/upload');
-  };
-
   const eachPost = (post) => {
     navigate(`/post/${post._id}`, { state: { post } });
   };
 
   return (
     <div className="p-4">
-      {/* <button
-        onClick={openForm}
-        className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-indigo-500 text-white py-3 px-6 rounded-lg shadow-lg transform transition duration-500 hover:scale-105 mb-6"
-      >
-        Add Yours
-      </button> */}
-
+    
       {error && <p className="text-red-500 text-center font-semibold">{error}</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
