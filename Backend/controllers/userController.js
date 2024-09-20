@@ -51,8 +51,7 @@ export const getUserPost = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const singlePost = await post.find({author : id});
-    console.log(singlePost);
+    const singlePost = await post.find({ author: id });
 
     if (!singlePost) {
       return res.status(404).json({ message: 'Post not found' });
@@ -65,3 +64,32 @@ export const getUserPost = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch the post: ' + error.message });
   }
 };
+
+export const editCaption = async (req, res) => {
+  try {
+    console.log("inside api call - edit caption");
+    const  postId  = req.params.id;
+    const { caption } = req.body;
+    
+    console.log(postId);
+    console.log(caption);
+
+    const editedPost = await post.findByIdAndUpdate(postId,
+      { caption: caption }, {
+      new: true
+    });
+    
+    console.log(editedPost);
+
+    if (!editedPost) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    res.status(200).json(editedPost);
+  } 
+  catch (error) {
+    console.error('Error in updating caption:', error);
+    res.status(500).json({ message: 'Failed to update the post: ' + error.message });
+  }
+}
+
