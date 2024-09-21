@@ -6,8 +6,9 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [editingPostId, setEditingPostId] = useState(null); 
+  const [editingPostId, setEditingPostId] = useState(null);
   const [caption, setCaption] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,15 +52,35 @@ const Dashboard = () => {
   };
 
   const handleEdit = (postId, currentCaption) => {
-    setEditingPostId(postId); 
-    setCaption(currentCaption); 
+    setEditingPostId(postId);
+    setCaption(currentCaption);
+  };
+
+  const handleDelete = async (postId) => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/delete_post/${postId}`,
+        { withCredentials: true }
+      );
+      console.log("post deleted")
+      if(response) {
+        navigate('/weather-gallery');
+      }
+      // setPosts((prevPost)=> prevPost.filter(post=> post._id !== postId));
+      alert("your post has been deleted");
+      
+      console.log(response);
+
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+      setError('Failed to delete post');
+    }
   };
 
   const handleSave = async (postId) => {
     try {
       console.log(caption);
       console.log(postId);
-      const response = await axios.put(`http://localhost:3000/edit_caption/${postId}`, 
+      const response = await axios.put(`http://localhost:3000/edit_caption/${postId}`,
         { caption },
         {
           withCredentials: true
@@ -72,7 +93,7 @@ const Dashboard = () => {
         )
       );
 
-      setEditingPostId(null); 
+      setEditingPostId(null);
     } catch (error) {
       console.error('Failed to update caption:', error);
       setError('Failed to update caption');
@@ -88,9 +109,7 @@ const Dashboard = () => {
       <div>Your Posts</div>
       {(posts.length > 0) ? (
         posts.map((post) => (
-          
           <div key={post._id}>
-            {console.log(post._id)}
             <img
               src={post.image}
               alt="Uploaded"
@@ -105,7 +124,7 @@ const Dashboard = () => {
                     onChange={(e) => setCaption(e.target.value)}
                     className="border rounded p-2"
                   />
-                  
+
                   <button onClick={() => handleSave(post._id)} className="bg-green-500 text-white py-2 px-4 rounded">
                     Save
                   </button>
@@ -125,19 +144,28 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
+            <div>
+              <button
+                onClick={() => handleDelete(post._id)}
+                className="bg-red-500 text-white py-2 px-4 rounded ml-2"
+              >
+                Delete Post
+              </button>
+            </div>
           </div>
         ))
       ) : (
         <div>
           No posts yet!
-          <button
-            onClick={openForm}
-            className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-indigo-500 text-white py-3 px-6 rounded-lg shadow-lg transform transition duration-500 hover:scale-105 mb-6"
-          >
-            Add Yours
-          </button>
+
         </div>
       )}
+      <button
+        onClick={openForm}
+        className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-indigo-500 text-white py-3 px-6 rounded-lg shadow-lg transform transition duration-500 hover:scale-105 mb-6"
+      >
+        Add Yours
+      </button>
     </div>
   );
 };

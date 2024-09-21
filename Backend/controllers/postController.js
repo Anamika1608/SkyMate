@@ -60,20 +60,45 @@ export const getPost = async (req, res) => {
    }
 };
 
-export const editPost = async (req, res) => {
+export const editCaption = async (req, res) => {
    try {
-
-   }
+     const  postId  = req.params.id;
+     const { caption } = req.body;
+     
+     console.log(postId);
+     console.log(caption);
+ 
+     const editedPost = await post.findByIdAndUpdate(postId,
+       { caption: caption }, {
+       new: true
+     });
+     
+     console.log(editedPost);
+ 
+     if (!editedPost) {
+       return res.status(404).json({ message: 'Post not found' });
+     }
+ 
+     res.status(200).json(editedPost);
+   } 
    catch (error) {
-      console.log(error);
+     console.error('Error in updating caption:', error);
+     res.status(500).json({ message: 'Failed to update the post: ' + error.message });
    }
-}
+};
 
 export const deletePost = async (req, res) => {
    try {
-
+      const  postId  = req.params.id;
+      const deletedPost = await post.findByIdAndDelete(postId);
+      console.log(deletedPost);
+      if (!deletedPost) {
+         return res.status(404).json({ message: 'Post not deleted' });
+       }
+      res.status(200).json(deletedPost);
    }
    catch (error) {
-
+      console.error('Error in deleting post:', error);
+      res.status(500).json({ message: 'Failed to delete the post ' + error.message });
    }
 }

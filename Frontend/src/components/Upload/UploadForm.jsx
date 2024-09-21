@@ -63,7 +63,7 @@ function UploadForm() {
         <input
           type="file"
           name="myFile"
-          accept=".png, .jpg, .jpeg"
+          accept=".png, .jpg, .jpeg , .webp , .svg"
           onChange={handleChange}
         />
       </div>
