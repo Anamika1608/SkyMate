@@ -50,13 +50,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     const savedPost = async () => {
-     
-        const response = await axios.get(`http://localhost:3000/get_saved_post/${user.id}`, {
-          withCredentials: true,
-        })
-        setSavedPosts(response.data);
-
-
+      const response = await axios.get(`http://localhost:3000/get_saved_post/${user.id}`, {
+        withCredentials: true,
+      })
+      setSavedPosts(response.data);
     };
     savedPost();
   }, [user]);
@@ -76,14 +73,9 @@ const Dashboard = () => {
         { withCredentials: true }
       );
       console.log("post deleted");
-      // if(response) {
-      //   navigate('/weather-gallery');
-      // }
       setPosts((prevPost) => prevPost.filter(post => post._id !== postId));
       alert("your post has been deleted");
-
       console.log(response);
-
     } catch (error) {
       console.error('Failed to delete post:', error);
       setError('Failed to delete post');
@@ -106,7 +98,6 @@ const Dashboard = () => {
           post._id === postId ? { ...post, caption } : post
         )
       );
-
       setEditingPostId(null);
     } catch (error) {
       console.error('Failed to update caption:', error);
@@ -114,98 +105,120 @@ const Dashboard = () => {
     }
   };
 
-  if (error) return <div>Error: {error}</div>;
-  if (!user) return <div>Loading...</div>;
+  if (error) return <div className="text-red-600 text-center text-xl font-bold p-4">Error: {error}</div>;
+  if (!user) return <div className="text-center text-xl font-bold p-4">Loading...</div>;
 
   return (
-    <div>
-      <h1>Welcome, {user.name}!</h1>
-      <div>Your Posts</div>
-      {(posts.length > 0) ? (
-        posts.map((post) => (
-          <div key={post._id}>
-            <img
-              src={post.image}
-              alt="Uploaded"
-              className="rounded-lg w-full object-cover shadow-md"
-            />
-            <div>
-              {editingPostId === post._id ? (
-                <div>
-                  <input
-                    type="text"
-                    value={caption}
-                    onChange={(e) => setCaption(e.target.value)}
-                    className="border rounded p-2"
-                  />
-
-                  <button onClick={() => handleSave(post._id)} className="bg-green-500 text-white py-2 px-4 rounded">
-                    Save
-                  </button>
-                  <button onClick={() => setEditingPostId(null)} className="bg-gray-500 text-white py-2 px-4 rounded">
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  {post.caption}
-                  <button
-                    onClick={() => handleEdit(post._id, post.caption)}
-                    className="bg-blue-500 text-white py-2 px-4 rounded ml-2"
-                  >
-                    Edit Caption
-                  </button>
-                </div>
-              )}
-            </div>
-            <div>
-              <button
-                onClick={() => handleDelete(post._id)}
-                className="bg-red-500 text-white py-2 px-4 rounded ml-2"
-              >
-                Delete Post
-              </button>
-            </div>
-          </div>
-        ))
-      ) : (
-        <div>
-          No posts yet!
-
+    <div className="bg-gray-50 min-h-screen">
+      <header className="border-b border-gray-200 py-6 px-4">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-teal-800">Welcome, {user.name}</h1>
+          <button
+            onClick={openForm}
+            className="bg-yellow-400 hover:bg-yellow-300 text-teal-900 font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+          >
+            Add New Post
+          </button>
         </div>
-      )}
-      <div>Saved Posts</div>
-      {savedPosts && savedPosts.length > 0 ? (
-        savedPosts.map((post) => (
-          <div key={post._id}>
-            <div className='flex'>
-            <img
-                src={post.author?.picture || 'https://via.placeholder.com/40'}
-                alt="Author"
-                className="h-12 w-12 rounded-full object-cover border-2 border-indigo-500"
-              />
-            <div>{post.author?.name}</div>
-            </div>
-            <img
-              src={post.image}
-              alt="Saved Post"
-              className="rounded-lg w-full object-cover shadow-md"
-            />
-            <div>{post.caption}</div>
+      </header>
 
-          </div>
-        ))
-      ) : (
-        <div>No saved posts yet!</div>
-      )}
-      <button
-        onClick={openForm}
-        className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-indigo-500 text-white py-3 px-6 rounded-lg shadow-lg transform transition duration-500 hover:scale-105 mb-6"
-      >
-        Add Yours
-      </button>
+      <main className="max-w-6xl mx-auto p-6">
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-teal-800 mb-6">Your Gallery</h2>
+          {posts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {posts.map((post) => (
+                <div key={post._id} className="bg-white rounded-lg overflow-hidden shadow-lg transform transition duration-500 hover:scale-105">
+                  <img
+                    src={post.image}
+                    alt="Uploaded"
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    {editingPostId === post._id ? (
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          value={caption}
+                          onChange={(e) => setCaption(e.target.value)}
+                          className="w-full border-b-2 border-teal-300 focus:border-teal-500 px-2 py-1 outline-none"
+                        />
+                        <div className="flex justify-end space-x-2">
+                          <button onClick={() => handleSave(post._id)} className="bg-teal-500 hover:bg-teal-600 text-white py-1 px-3 rounded-full text-sm">
+                            Save
+                          </button>
+                          <button onClick={() => setEditingPostId(null)} className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-1 px-3 rounded-full text-sm">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-gray-700 mb-3">{post.caption}</p>
+                        <div className="flex justify-between">
+                          <button
+                            onClick={() => handleEdit(post._id, post.caption)}
+                            className="text-teal-600 hover:text-teal-800"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(post._id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-600 bg-white rounded-lg p-8 shadow-md">
+              <p className="text-xl mb-4">Your gallery is empty!</p>
+              <p>Start by adding your first post.</p>
+            </div>
+          )}
+        </section>
+
+        <section>
+          <h2 className="text-2xl font-semibold text-teal-800 mb-6">Saved Inspirations</h2>
+          {savedPosts && savedPosts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {savedPosts.map((post) => (
+                <div key={post._id} className="bg-white rounded-lg overflow-hidden shadow-lg">
+                  <div className="flex items-center p-4 bg-teal-50">
+                    <img
+                      src={post.author?.picture || 'https://via.placeholder.com/40'}
+                      alt="Author"
+                      className="h-10 w-10 rounded-full object-cover border-2 border-teal-400 mr-3"
+                    />
+                    <div className="font-semibold text-teal-800">{post.author?.name}</div>
+                  </div>
+                  <img
+                    src={post.image}
+                    alt="Saved Post"
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    <p className="text-gray-700">{post.caption}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-600 bg-white rounded-lg p-8 shadow-md">
+              <p className="text-xl mb-4">No saved inspirations yet!</p>
+              <p>Explore and save posts you love.</p>
+            </div>
+          )}
+        </section>
+      </main>
     </div>
   );
+
 };
 
 export default Dashboard;
