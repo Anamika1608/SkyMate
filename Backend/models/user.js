@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
+  savedPost : [
+    {
+      type: mongoose.Schema.Types.ObjectId , ref : 'Post'
+    }
+  ]
 });
 
 // Middleware to hash the password before saving

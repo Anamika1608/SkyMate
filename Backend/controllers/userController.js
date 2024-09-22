@@ -65,3 +65,56 @@ export const getUserPost = async (req, res) => {
   }
 };
 
+export const userSavedPost = async (req, res) => {
+  try {
+    const userId = req.user?._id; 
+    const { postId } = req.body;
+
+    if (!postId) {
+      return res.status(400).json({ message: "Post ID is required" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { savedPost: postId } },
+      { new: true } 
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Post saved successfully" });
+  } catch (error) {
+    console.error('Error saving post:', error);
+    res.status(500).json({ message: `Failed to save post: ${error.message}` });
+  }
+};
+
+export const unsavePost = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+    const { postId } = req.body;
+
+    if (!postId) {
+      return res.status(400).json({ message: "Post ID is required" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { savedPost: postId } }, 
+      { new: true }
+    );
+
+    console.log(user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Post unsaved successfully" });
+  } catch (error) {
+    console.error('Error unsaving post:', error);
+    res.status(500).json({ message: `Failed to unsave post: ${error.message}` });
+  }
+};

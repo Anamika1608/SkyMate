@@ -61,11 +61,11 @@ const Dashboard = () => {
       const response = await axios.delete(`http://localhost:3000/delete_post/${postId}`,
         { withCredentials: true }
       );
-      console.log("post deleted")
-      if(response) {
-        navigate('/weather-gallery');
-      }
-      // setPosts((prevPost)=> prevPost.filter(post=> post._id !== postId));
+      console.log("post deleted");
+      // if(response) {
+      //   navigate('/weather-gallery');
+      // }
+      setPosts((prevPost)=> prevPost.filter(post=> post._id !== postId));
       alert("your post has been deleted");
       
       console.log(response);
