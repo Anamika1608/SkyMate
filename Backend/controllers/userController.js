@@ -38,8 +38,8 @@ export const getUser = async (req, res) => {
     }
 
     console.log('User found:', user);
-
-    res.status(200).json({ name: user.name, email: user.email, picture: user.picture, id: user._id });
+    
+    res.status(200).json({ name: user.name, email: user.email, picture: user.picture, id: user._id});
   }
   catch (error) {
     console.error('Error in getUser:', error);
@@ -116,5 +116,31 @@ export const unsavePost = async (req, res) => {
   } catch (error) {
     console.error('Error unsaving post:', error);
     res.status(500).json({ message: `Failed to unsave post: ${error.message}` });
+  }
+}; 
+
+export const getSavedPost = async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const reqUser = await User.findById(id).populate({
+      path : 'savedPost',
+      populate : {
+        path : 'author',
+        select : 'name picture'
+      }
+    });  
+
+    if (!reqUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const savedPosts = reqUser.savedPost;
+    console.log(savedPosts);  
+    
+    res.status(200).json(savedPosts);
+    
+  } catch (error) {
+    console.error('Error fetching saved posts:', error);
+    res.status(500).json({ message: `Failed to fetch saved posts: ${error.message}` });
   }
 };

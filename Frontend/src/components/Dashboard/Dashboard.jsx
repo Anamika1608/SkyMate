@@ -8,6 +8,7 @@ const Dashboard = () => {
   const [posts, setPosts] = useState([]);
   const [editingPostId, setEditingPostId] = useState(null);
   const [caption, setCaption] = useState('');
+  const [savedPosts, setSavedPosts] = useState(null);
 
   const navigate = useNavigate();
 
@@ -47,6 +48,19 @@ const Dashboard = () => {
     getUserPost();
   }, [user]);
 
+  useEffect(() => {
+    const savedPost = async () => {
+     
+        const response = await axios.get(`http://localhost:3000/get_saved_post/${user.id}`, {
+          withCredentials: true,
+        })
+        setSavedPosts(response.data);
+
+
+    };
+    savedPost();
+  }, [user]);
+
   const openForm = () => {
     navigate('/upload');
   };
@@ -65,9 +79,9 @@ const Dashboard = () => {
       // if(response) {
       //   navigate('/weather-gallery');
       // }
-      setPosts((prevPost)=> prevPost.filter(post=> post._id !== postId));
+      setPosts((prevPost) => prevPost.filter(post => post._id !== postId));
       alert("your post has been deleted");
-      
+
       console.log(response);
 
     } catch (error) {
@@ -159,6 +173,30 @@ const Dashboard = () => {
           No posts yet!
 
         </div>
+      )}
+      <div>Saved Posts</div>
+      {savedPosts && savedPosts.length > 0 ? (
+        savedPosts.map((post) => (
+          <div key={post._id}>
+            <div className='flex'>
+            <img
+                src={post.author?.picture || 'https://via.placeholder.com/40'}
+                alt="Author"
+                className="h-12 w-12 rounded-full object-cover border-2 border-indigo-500"
+              />
+            <div>{post.author?.name}</div>
+            </div>
+            <img
+              src={post.image}
+              alt="Saved Post"
+              className="rounded-lg w-full object-cover shadow-md"
+            />
+            <div>{post.caption}</div>
+
+          </div>
+        ))
+      ) : (
+        <div>No saved posts yet!</div>
       )}
       <button
         onClick={openForm}
