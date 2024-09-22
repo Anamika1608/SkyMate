@@ -7,9 +7,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const { isLoggedIn, setIsLoggedIn } = useAuth();
-  const [profilePicture, setProfilePicture] = useState(
-    
-  );
+  const [profilePicture, setProfilePicture] = useState("");
 
   useEffect(() => {
     checkLoginStatus();
@@ -27,6 +25,25 @@ export default function Navbar() {
     }
   };
 
+  const handleLoginLogout = async () => {
+    if (isLoggedIn) {
+      // Call the logout API when the user clicks 'Logout'
+      try {
+        const response = await axios.get("http://localhost:3000/logout", {
+          withCredentials: true,
+        });
+        if (response.status === 200) {
+          setIsLoggedIn(false); // Update login status after successful logout
+          navigate("/login");
+        }
+      } catch (error) {
+        console.error("Error logging out:", error);
+      }
+    } else {
+      // Navigate to the login page when the user clicks 'Login'
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="shadow-md flex flex-wrap items-center p-1 bg-[#d9f0ff]">
@@ -45,7 +62,10 @@ export default function Navbar() {
             onChange={(e) => setSearch(e.target.value)}
             value={search}
           />
-          <button className="btn bg-white ml-2 w-20 pt-0 pl-0 pr-0 rounded-xl hover:bg-[#FFF0DA] text-sm sm:text-base sm:w-20">
+          <button
+            type="button"
+            className="btn bg-white ml-2 w-20 pt-0 pl-0 pr-0 rounded-xl hover:bg-[#FFF0DA] text-sm sm:text-base sm:w-20"
+          >
             Search
           </button>
         </form>
@@ -54,25 +74,23 @@ export default function Navbar() {
       <div className="p-2 ml-28 sm:ml-0 flex items-center">
         <button
           className="btn bg-white ml-5 w-20 pt-0 pl-0 pr-0 rounded-xl hover:bg-[#FFF0DA] text-lg sm:text-base sm:w-20"
-          onClick={() => navigate("/login")}
+          onClick={handleLoginLogout}
         >
-          Login
+          {isLoggedIn ? "Logout" : "Login"}
         </button>
 
-        
         {isLoggedIn && (
           <div
             className="ml-4 rounded-full h-10 w-10 bg-yellow-200 cursor-pointer overflow-hidden"
-            onClick={()=> navigate('/profile')}
+            onClick={() => navigate("/profile")}
           >
             <img
-              src={profilePicture}
+              src="/profile.jpg"
               alt="Profile"
               className="h-full w-full object-cover"
             />
           </div>
         )}
-        
       </div>
     </div>
   );

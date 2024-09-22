@@ -191,7 +191,7 @@ const Dashboard = () => {
                 <div key={post._id} className="bg-white rounded-lg overflow-hidden shadow-lg">
                   <div className="flex items-center p-4 bg-teal-50">
                     <img
-                      src={post.author?.picture || 'https://via.placeholder.com/40'}
+                      src='/profile.jpg'
                       alt="Author"
                       className="h-10 w-10 rounded-full object-cover border-2 border-teal-400 mr-3"
                     />

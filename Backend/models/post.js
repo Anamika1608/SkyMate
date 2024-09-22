@@ -19,7 +19,7 @@ const postSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId , ref : 'Comment'
     }
   ]
-});
+}, { timestamps: true });
 
 const Post = mongoose.model('Post', postSchema);
 

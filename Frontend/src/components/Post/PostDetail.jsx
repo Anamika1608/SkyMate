@@ -126,7 +126,7 @@ function PostDetail() {
         <div className="bg-gray-100 shadow-lg rounded-lg p-6 flex flex-col items-center">
           <div className="flex items-center mb-4">
             <img
-              src={post.author?.picture || 'https://via.placeholder.com/40'}
+              src='/profile.jpg'
               alt="Author"
               className="h-12 w-12 rounded-full border-2 border-indigo-400"
             />

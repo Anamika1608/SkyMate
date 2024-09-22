@@ -86,7 +86,7 @@ function Gallery() {
           >
             <div className="flex items-center p-3 bg-gray-50 border-b border-gray-200">
               <img
-                src={post.author?.picture || 'https://via.placeholder.com/40'}
+                src='/profile.jpg'
                 alt="Author"
                 className="h-12 w-12 rounded-full object-cover border-2 border-indigo-500"
               />

@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   },
   picture: {
     type: String,
-    default: "https://via.placeholder.com/40",
+    default: "/profile.jpg",
   },
   email: {
     type: String,
