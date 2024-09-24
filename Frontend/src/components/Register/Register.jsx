@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import useAuth from '../../context/AuthContext';
+import useAppContext from '../../context/AppContext';
 import { Eye, EyeOff } from 'lucide-react';
 
 export default function Register() {
-  const { setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn } = useAppContext();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

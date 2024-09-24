@@ -7,6 +7,7 @@ import authRoutes from "../routes/authRoute.js";
 import postRoutes from "../routes/postRoute.js"
 import userRoutes from "../routes/userRoutes.js"
 import commentRoutes from "../routes/commentRoute.js" 
+import weatherRoutes from '../routes/weatherRoute.js'
 
 const port = process.env.PORT;
 
@@ -29,6 +30,7 @@ app.use(authRoutes);
 app.use(postRoutes);
 app.use(userRoutes);
 app.use(commentRoutes);
+app.use(weatherRoutes);
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);

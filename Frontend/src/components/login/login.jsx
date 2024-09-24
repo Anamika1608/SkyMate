@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
-import useAuth from '../../context/AuthContext';
+import useAppContext from '../../context/AppContext';
 import {Eye , EyeOff} from 'lucide-react';
 
 export default function Login() {
-  const { setIsLoggedIn } = useAuth();
+  const { setIsLoggedIn } = useAppContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -94,10 +94,10 @@ export default function Login() {
           <div className="mt-8">
             <div className="flex items-center justify-between mb-4">
               <hr className="w-full border-t border-gray-300" />
-              <span className="px-2 text-gray-500 bg-white">or</span>
+              {/* <span className="px-2 text-gray-500 bg-white">or</span> */}
               <hr className="w-full border-t border-gray-300" />
             </div>
-            <button
+            {/* <button
               onClick={login}
               
               className="w-full bg-white border border-gray-300 text-gray-700 rounded-lg px-4 py-3 font-semibold hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-200 flex items-center justify-center"
@@ -122,7 +122,7 @@ export default function Login() {
                 <path fill="none" d="M1 1h22v22H1z" />
               </svg>
               Continue with Google
-            </button>
+            </button> */}
           </div>
           <p className="text-center mt-8 text-sm text-gray-600">
             Don't have an account? <a href="/register" className="text-indigo-600 hover:text-indigo-700 font-semibold">Register here</a>

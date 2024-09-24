@@ -5,7 +5,7 @@ import Footer from "./components/Footer/Footer"
 import { Outlet } from "react-router-dom"
 // import { ThemeProvider } from './context/theme';
 import { useState, useEffect } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AppContext';
 
 function App() {
  

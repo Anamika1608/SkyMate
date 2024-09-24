@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../context/AuthContext";
+import useAppContext from "../../context/AppContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-  const { isLoggedIn, setIsLoggedIn } = useAuth();
-  const [profilePicture, setProfilePicture] = useState("");
+  const { isLoggedIn, setIsLoggedIn, location , setLocation } = useAppContext(); 
 
   useEffect(() => {
     checkLoginStatus();
@@ -27,20 +25,18 @@ export default function Navbar() {
 
   const handleLoginLogout = async () => {
     if (isLoggedIn) {
-      // Call the logout API when the user clicks 'Logout'
       try {
         const response = await axios.get("http://localhost:3000/logout", {
           withCredentials: true,
         });
         if (response.status === 200) {
-          setIsLoggedIn(false); // Update login status after successful logout
-          navigate("/login");
+          setIsLoggedIn(false);
+          navigate("");
         }
       } catch (error) {
         console.error("Error logging out:", error);
       }
     } else {
-      // Navigate to the login page when the user clicks 'Login'
       navigate("/login");
     }
   };
@@ -59,11 +55,12 @@ export default function Navbar() {
             type="text"
             placeholder="Enter location"
             className="text-center p-1 rounded-xl w-36 text-base sm:p-2 sm:rounded-2xl sm:w-auto sm:text-base"
-            onChange={(e) => setSearch(e.target.value)}
-            value={search}
+            onChange={(e) => setLocation(e.target.value)}
+            value={location}
           />
           <button
             type="button"
+            onClick={() => navigate(`/weather?location=${location}`)}
             className="btn bg-white ml-2 w-20 pt-0 pl-0 pr-0 rounded-xl hover:bg-[#FFF0DA] text-sm sm:text-base sm:w-20"
           >
             Search

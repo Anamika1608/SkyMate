@@ -1,9 +1,9 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom';
-import useAuth from './context/AuthContext'
+import useAppContext from './context/AppContext'
 
 export function PrivateRoute ({ children }){
-    const {isLoggedIn} = useAuth();
+    const {isLoggedIn} = useAppContext();
     if(!isLoggedIn) {
         return <Navigate to= '/login'/>
     }
