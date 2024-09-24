@@ -26,7 +26,40 @@ export default function Weather() {
                 <h2>o3 - {data.current.air_quality.o3} ug/m3</h2>
                 <h2>so2 {data.current.air_quality.so2} ug/m3</h2>
             </div>
-            
+            <div>
+                <br /> <br />
+                <h1>Forecast weather</h1>
+                <div>{data.forecast.forecastday.map((d)=>(
+                    <div>
+                        <div>Date - {d.date}</div>
+                        <div>Max Temp in Celsius - {d.day.maxtemp_c}</div>
+                        <div>Min Temp in Celsius - {d.day.mintemp_c}</div>
+                        <div>Avg Temp in Celsius - {d.day.avgtemp_c}</div>
+                        <div> maxwind_mph - {d.day.maxwind_mph}</div>
+                        <div>uv - {d.day.uv}</div>
+                        <div>condition - {d.day.condition.text}</div>
+                        <img src={d.day.condition.icon} alt="" />
+                        <div> chance_of_rain- {d.day.daily_chance_of_rain}</div>
+                        <div>avghumidity - {d.day.avghumidity}</div>
+                        <div>sunrise - {d.astro.sunrise}</div>
+                        <div> sunset- {d.astro.sunset}</div>
+                        <div> moonrise - {d.astro.moonrise}</div>
+                        <div> moonset- {d.astro.moonset}</div>
+                        <br />
+                        <div>Hour Wise </div>
+                        <div>
+                         {d.hour.map((h)=>(
+                            <div>
+                                <div>{h.time}</div>
+                                <div>Temp - {h.temp_c} / {h.temp_f}</div>
+                                <img src={h.condition.icon} alt="condition" />
+                                <div>{h.condition.text}</div>
+                            </div>
+                         ))}
+                        </div>
+                    </div>
+                ))}</div>
+            </div>
         </div>
     )
 }
