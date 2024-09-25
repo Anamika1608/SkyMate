@@ -5,8 +5,11 @@ const AppContext = createContext();
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [location, setLocation] = useState('');
+  const [data,setData] = useState(null);
+  const [alerts , setAlerts] = useState([]);
+
   return (
-    <AppContext.Provider value={{ isLoggedIn, setIsLoggedIn,location, setLocation}}>
+    <AppContext.Provider value={{ isLoggedIn, setIsLoggedIn,location, setLocation , data , setData , alerts , setAlerts}}>
       {children}
     </AppContext.Provider>
   );

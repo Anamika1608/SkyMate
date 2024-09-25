@@ -20,6 +20,7 @@ import { PrivateRoute } from './PrivateRoute.jsx'
 import UploadForm from './components/Upload/UploadForm.jsx'
 import Dashboard from './components/Dashboard/Dashboard.jsx'
 import PostDetail from './components/Post/PostDetail.jsx'
+import ActivitySuggestion from './components/Activity/ActivitySuggestion.jsx'
 
 const GoogleAuthWrapper = () => {
   return (
@@ -43,7 +44,7 @@ const router = createBrowserRouter(
       <Route path='post/:id' element={<PostDetail />} />
       <Route path='upload' element={<UploadForm />} />
       <Route path='profile' element={<Dashboard />} />
-
+      <Route path='activity-suggestion' element={<ActivitySuggestion />} />
       <Route loader={WeatherGen}  path='weather' element={<WeatherPage/>} />
     </Route>
   )

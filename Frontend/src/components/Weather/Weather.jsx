@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLoaderData } from "react-router-dom";
 import { Sun, Cloud, Droplets, Wind, Thermometer, Sunrise, Sunset, Moon, CloudRain, Umbrella } from 'lucide-react';
 import { motion } from 'framer-motion';
+import './AiButton.css'
+import useAppContext from "../../context/AppContext";
+import { useNavigate } from 'react-router-dom';
 
 const WeatherIcon = ({ condition, icon, size = 48 }) => (
     <motion.div
@@ -53,12 +56,17 @@ const ForecastCard = ({ day, isSelected, onClick }) => {
                 <WeatherIcon condition={day.day.condition.text} icon={day.day.condition.icon} size={10} />
             </div>
             <div>
-                <p className="text-xs mt-1 flex items-center space-x-2">
-                    <Thermometer size={16} className="text-red-600" />
-                    <span className="text-sm font-medium text-black">Highest: {day.day.maxtemp_c}°C</span>
-                    <Thermometer size={16} className="text-blue-600" />
-                    <span className="text-sm font-medium text-black">Lowest: {day.day.mintemp_c}°C</span>
+                <p className="text-xs sm:text-sm mt-1 flex flex-col sm:flex-row items-center sm:space-x-2">
+                    <div className="flex items-center space-x-1">
+                        <Thermometer size={16} className="text-red-600" />
+                        <span className="text-xs sm:text-sm font-medium text-black">Highest: {day.day.maxtemp_c}°C</span>
+                    </div>
+                    <div className="flex items-center space-x-1 mt-1 sm:mt-0">
+                        <Thermometer size={16} className="text-blue-600" />
+                        <span className="text-xs sm:text-sm font-medium text-black">Lowest: {day.day.mintemp_c}°C</span>
+                    </div>
                 </p>
+
             </div>
 
         </motion.div>
@@ -87,7 +95,7 @@ const HourlyForecast = ({ hours }) => (
                         <br />
                         <WeatherIcon condition={hour.condition.text} icon={hour.condition.icon} size={10} />
                         <p className="text-lg font-semibold text-blue-900 mt-2">{hour.temp_c}°C</p>
-                       
+
                         <div className="flex items-center mt-1">
 
                             <p className="text-xs text-blue-700">{hour.condition.text}</p>
@@ -149,35 +157,56 @@ const AstroCard = ({ astro }) => (
 
 const getBackgroundStyle = (condition) => {
     const timeOfDay = new Date().getHours() > 6 && new Date().getHours() < 18 ? 'day' : 'night';
-    
+
     const gradients = {
-      day: 'from-blue-400 via-teal-600 to-cyan-800',
-      night: 'from-indigo-400 via-purple-600 to-blue-600',
-      cloudy: 'from-gray-400 via-blue-300 to-gray-300',
-      rainy: 'from-gray-700 via-blue-500 to-gray-400',
+        day: 'from-blue-400 via-teal-600 to-cyan-800',
+        night: 'from-indigo-400 via-purple-600 to-blue-600',
+        cloudy: 'from-gray-400 via-blue-300 to-gray-300',
+        rainy: 'from-gray-700 via-blue-500 to-gray-400',
     };
-  
+
     switch (condition.toLowerCase()) {
-      case 'clear':
-      case 'sunny':
-        return `bg-gradient-to-br ${gradients.day}`;
-      case 'partly cloudy':
-        return `bg-gradient-to-br ${gradients.cloudy}`;
-      case 'cloudy':
-      case 'overcast':
-        return `bg-gradient-to-br ${gradients.cloudy}`;
-      case 'rain':
-      case 'light rain':
-      case 'moderate rain':
-      case 'heavy rain':
-        return `bg-gradient-to-br ${gradients.rainy}`;
-      default:
-        return `bg-gradient-to-br ${timeOfDay === 'day' ? gradients.day : gradients.night}`;
+        case 'clear':
+        case 'sunny':
+            return `bg-gradient-to-br ${gradients.day}`;
+        case 'partly cloudy':
+            return `bg-gradient-to-br ${gradients.cloudy}`;
+        case 'cloudy':
+        case 'overcast':
+            return `bg-gradient-to-br ${gradients.cloudy}`;
+        case 'rain':
+        case 'light rain':
+        case 'moderate rain':
+        case 'heavy rain':
+            return `bg-gradient-to-br ${gradients.rainy}`;
+        default:
+            return `bg-gradient-to-br ${timeOfDay === 'day' ? gradients.day : gradients.night}`;
     }
-  };
-  
+};
+
+
 export default function Weather() {
+
     const data = useLoaderData();
+    const { setData , setAlerts} = useAppContext();
+    const navigate = useNavigate();
+
+    const getSuggestion = () => {
+        setData({
+            'Location': data.location.name,
+            'Region': data.location.region,
+            'Country': data.location.country,
+            'CurrentTemp': data.current.temp_c,
+            'Humidity': data.current.humidity,
+            'CloudCover': data.current.cloud,
+            'UV': data.current.uv,
+            'HeatIndex': data.current.heatindex_c,
+            'Conditon': data.current.condition.text,
+            'WindchillTemperature': data.current.windchill_c,
+        });
+        navigate('/activity-suggestion');
+    }
+
     const [selectedDay, setSelectedDay] = useState(0);
     const backgroundStyle = getBackgroundStyle(data.current.condition.text);
 
@@ -190,8 +219,108 @@ export default function Weather() {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-5xl font-bold mb-2 text-white drop-shadow-lg">Weather Insights</h1>
-                    <p className="text-xl text-blue-100 drop-shadow">{data.location.name}, {data.location.region}, {data.location.country}</p>
+                    <div className='flex flex-col sm:flex-row justify-around items-center'>
+                        <div className="mb-4 sm:mb-0 text-center sm:text-left">
+                            <h1 className="text-4xl sm:text-5xl font-bold mb-2 text-white drop-shadow-lg">
+                                Weather Insights
+                            </h1>
+                            <p className="text-lg sm:text-xl text-blue-100 drop-shadow">
+                                {data.location.name}, {data.location.region}, {data.location.country}
+                            </p>
+                        </div>
+                        <div>
+                            <button
+                                className="shadow-md px-7 py-3 text-lg sm:text-xl bg-[#6c3ff2] text-white rounded-[12px] hover:bg-[#3437eb] transition duration-300 hover:text-white hover:text-medium"
+                                onClick={() => getSuggestion()}
+                            >
+                                <div className='flex flex-col justify-center items-center sm:flex-row'>
+                                    <span>Get Personalized</span>
+                                    <span className="sm:ml-2">Activity Suggestion</span>
+                                    <div class="star-1">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-2">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-3">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-4">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-5">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-6">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+
+
                 </motion.header>
 
                 <main className="space-y-12">

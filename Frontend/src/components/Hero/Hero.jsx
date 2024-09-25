@@ -7,7 +7,7 @@ export default function Hero() {
 
     const getCoordinate = () => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPCosition(
+            navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
