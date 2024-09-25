@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLoaderData } from "react-router-dom";
 import { Sun, Cloud, Droplets, Wind, Thermometer, Sunrise, Sunset, Moon, CloudRain, Umbrella } from 'lucide-react';
 import { motion } from 'framer-motion';
-import './Weather.css';
 
 const WeatherIcon = ({ condition, icon, size = 48 }) => (
     <motion.div
@@ -154,7 +153,7 @@ const getBackgroundStyle = (condition) => {
     const gradients = {
       day: 'from-blue-400 via-teal-600 to-cyan-800',
       night: 'from-indigo-400 via-purple-600 to-blue-600',
-      cloudy: 'from-gray-400 via-blue-300 to-gray-200',
+      cloudy: 'from-gray-400 via-blue-300 to-gray-300',
       rainy: 'from-gray-700 via-blue-500 to-gray-400',
     };
   
@@ -245,7 +244,7 @@ export default function Weather() {
 
 export const WeatherGen = async ({ request }) => {
     const url = new URL(request.url);
-    const location = url.searchParams.get('location') || 'New Delhi';
+    const location = url.searchParams.get('location') || 'Canada';
     const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=ab552eb127da4739bd1190605242309&q=${location}&days=3&aqi=yes&alerts=yes`);
     return response.json();
 };
