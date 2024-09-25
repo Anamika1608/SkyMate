@@ -206,7 +206,7 @@ export default function Weather() {
         });
         navigate('/activity-suggestion');
     }
-
+    
     const [selectedDay, setSelectedDay] = useState(0);
     const backgroundStyle = getBackgroundStyle(data.current.condition.text);
 
@@ -373,7 +373,7 @@ export default function Weather() {
 
 export const WeatherGen = async ({ request }) => {
     const url = new URL(request.url);
-    const location = url.searchParams.get('location') || 'Canada';
+    const location = url.searchParams.get('location') || 'New Delhi';
     const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=ab552eb127da4739bd1190605242309&q=${location}&days=3&aqi=yes&alerts=yes`);
     return response.json();
 };

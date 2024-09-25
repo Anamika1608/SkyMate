@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const features = [
   {
     icon: '🏃‍♂️',
-    link : '',
+    link : '/activity-suggestion',
     title: 'Activity Planner',
     description: 'Get personalized outdoor activity suggestions  based on current and forecasted weather conditions.'
   },

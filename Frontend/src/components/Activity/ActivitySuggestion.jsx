@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import useAppContext from "../../context/AppContext";
-import { Heart, Star, ThumbsUp, Sun, Users, Umbrella, Clock, MapPin, Thermometer, Droplets, Cloud, Wind, Sunrise, Sunset } from 'lucide-react';
+import { Heart, Star, ThumbsUp, Sun, Users, Umbrella, Clock, MapPin, Thermometer, Droplets, Cloud, Wind } from 'lucide-react';
 
 const ActivityCard = ({ title, content, icon: Icon }) => (
     <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border-l-4 border-indigo-500">
@@ -39,15 +39,17 @@ const WeatherInfo = ({ data }) => (
     </div>
 );
 
-
 const ActivitySuggestion = () => {
     const [activities, setActivities] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { data } = useAppContext();
 
+    const hasLocationData = data?.Location && data?.Country;
+
     useEffect(() => {
-        const genAI = new GoogleGenerativeAI('AIzaSyAmfXzDcupumkaxm0PY9oAs4M7-FMaf14I');
+        if (!hasLocationData) return; 
+        const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `Based on the following weather data, suggest personalized and unique outdoor activities that are safe, enjoyable, and suitable for the given conditions. Consider the temperature, humidity, UV index, and other factors such as cloud cover, windchill, and heat index. Additionally, provide safety tips or preparations that someone should take for each activity. Ensure the activities are creative and tailored for different types of users (e.g., solo, families, adventure seekers, relaxation).
@@ -91,8 +93,8 @@ const ActivitySuggestion = () => {
                 const responseText = result.response.text();
 
                 const cleanedResponse = responseText.replace(/json|/g, '').trim();
-
                 const parsedActivities = JSON.parse(cleanedResponse);
+
                 setActivities(parsedActivities);
                 setError(null);
             } catch (error) {
@@ -105,7 +107,7 @@ const ActivitySuggestion = () => {
         };
 
         fetchResult();
-    }, [data]);
+    }, [data, hasLocationData]);
 
     const activityTypes = [
         { key: 'solo', icon: Sun, title: 'Solo Adventures', bgColor: 'bg-yellow-100 bg-gradient-to-r from-yellow-100 to-yellow-200' },
@@ -122,46 +124,43 @@ const ActivitySuggestion = () => {
                 Weather-Inspired Activity Ideas
             </h1>
 
-            <WeatherInfo data={data} />
-
-            {loading ? (
-                <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
-                </div>
-            ) : error ? (
+            {!hasLocationData ? (
                 <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                    <p className="font-bold">Error</p>
-                    <p>{error}</p>
+                    <p className="font-bold">No Location Data</p>
+                    <p className='text-black'>You have not entered a location. Please provide your location to get activity suggestions.</p>
                 </div>
-            ) : activities ? (
-                <div className="space-y-12">
-                    {activityTypes.map(({ key, icon: Icon, title, bgColor }) => (
-                        <div key={key} className={`${bgColor} p-6 rounded-lg shadow-md hover:shadow-lg transition-transform duration-300 transform hover:-translate-y-1`}>
-                            <div className="flex items-center mb-4">
-                                <Icon className="w-8 h-8 mr-3 text-indigo-600" />
-                                <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {activities[key]?.map((activity, index) => (
-                                    <ActivityCard key={index} title={activity.title} content={activity.description} icon={Icon} />
-                                ))}
-                            </div>
+            ) : (
+                <div>
+                    <WeatherInfo data={data} />
+
+                    {loading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
                         </div>
-                    ))}
+                    ) : error ? (
+                        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                            <p className="font-bold">Error</p>
+                            <p>{error}</p>
+                        </div>
+                    ) : activities ? (
+                        <div className="space-y-12">
+                            {activityTypes.map(({ key, icon: Icon, title, bgColor }) => (
+                                <div key={key} className={`${bgColor} p-6 rounded-lg shadow-md hover:shadow-lg transition-transform duration-300 transform hover:-translate-y-1`}>
+                                    <div className="flex items-center mb-4">
+                                        <Icon className="w-8 h-8 mr-3 text-indigo-600" />
+                                        <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {activities[key]?.map((activity, index) => (
+                                            <ActivityCard key={index} title={activity.title} content={activity.description} icon={Icon} />
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
                 </div>
-            ) : null}
-
-            {/* <footer className="mt-12 bg-purple-50 p-6 rounded-lg shadow-md text-center">
-                <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-indigo-600">
-                    Enjoy your weather-perfect activities!
-                </p>
-                <div className="flex justify-center mt-4 space-x-4 text-gray-600">
-                    <Heart className="w-6 h-6 text-pink-500" />
-                    <Star className="w-6 h-6 text-yellow-500" />
-                    <ThumbsUp className="w-6 h-6 text-blue-500" />
-                </div>
-            </footer> */}
-
+            )}
         </div>
     );
 };
