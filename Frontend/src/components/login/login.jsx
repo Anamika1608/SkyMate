@@ -85,7 +85,7 @@ export default function Login() {
               </button>
             </div>
             <button
-              className="w-full bg-indigo-600 text-white rounded-lg px-4 py-3 mt-6 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-200"
+              className="w-full bg-indigo-600 text-white hover:text-white rounded-lg px-4 py-3 mt-6 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-200"
               type="submit"
             >
               Sign In

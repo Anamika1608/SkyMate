@@ -42,7 +42,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="shadow-md flex flex-wrap items-center p-1 bg-[#d9f0ff]">
+    <div className=" shadow-md flex flex-wrap items-center p-1 bg-[#dae9f5]">
       <a
         className="text-2xl font-medium text-blue-700 sm:text-3xl sm:ml-3"
         href="/"

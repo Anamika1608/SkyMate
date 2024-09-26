@@ -8,7 +8,7 @@ const features = [
     icon: '🏃‍♂️',
     link : '/activity-suggestion',
     title: 'Activity Planner',
-    description: 'Get personalized outdoor activity suggestions  based on current and forecasted weather conditions.'
+    description: 'Get AI-based activity suggestions tailored to your current weather and mood. Whether solo, with family, or seeking adventure,find the perfect experience for any forecast.'
   },
   // {
   //   icon: '🫁',
@@ -18,15 +18,15 @@ const features = [
   // },
   {
     icon: '💡',
-    link : 'energy-saver',
+    link : '',
     title: 'Energy Saver',
-    description: 'Discover daily tips to reduce energy consumption and costs based on weather patterns xxxxxxxxx.'
+    description: 'Personalized recipes and energy-saving tips based on current weather and Seasonal insights with actionable advice for every climate condition.'
   },
   {
     icon: '📸',
     link : '/login',
     title: 'Weather Gallery',
-    description: 'Share and explore user-submitted weather photos from around the world xxxxxxxxxxxxxxxx.'
+    description: 'Share your weather photos and explore global captures. Bookmark favorites, comment, and engage with the community.Share, connect, and experience the beauty of weather globally! '
   }
 ];
 

@@ -255,9 +255,8 @@ export default function Weather() {
                                 className="shadow-md px-7 py-3 text-lg sm:text-xl bg-[#6c3ff2] text-white rounded-[12px] hover:bg-[#3437eb] transition duration-300 hover:text-white hover:text-medium"
                                 onClick={() => getSuggestion()}
                             >
-                                <div className='flex flex-col justify-center items-center sm:flex-row'>
-                                    <span>Get Personalized</span>
-                                    <span className="sm:ml-2">Activity Suggestion</span>
+                                <div className='flex flex-col justify-center items-center sm:flex-row'>      
+                                    <span className="sm:ml-2">Get Recipe tailored to weather</span>
                                     <div class="star-1">
                                         <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
                                             style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
