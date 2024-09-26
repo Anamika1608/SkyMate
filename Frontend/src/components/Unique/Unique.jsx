@@ -18,7 +18,7 @@ const features = [
   },
   {
     icon: '💡',
-    link : '',
+    link : 'energy-saver',
     title: 'Energy Saver',
     description: 'Discover daily tips to reduce energy consumption and costs based on weather patterns xxxxxxxxx.'
   },
