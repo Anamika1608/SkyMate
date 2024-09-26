@@ -10,12 +10,12 @@ const features = [
     title: 'Activity Planner',
     description: 'Get personalized outdoor activity suggestions  based on current and forecasted weather conditions.'
   },
-  {
-    icon: '🫁',
-    link : '',
-    title: 'Health Alerts',
-    description: 'Get info about affecting allergies, air quality, and overall wellness according to weather conditions.'
-  },
+  // {
+  //   icon: '🫁',
+  //   link : '',
+  //   title: 'Health Alerts',
+  //   description: 'Get info about affecting allergies, air quality, and overall wellness according to weather conditions.'
+  // },
   {
     icon: '💡',
     link : 'energy-saver',

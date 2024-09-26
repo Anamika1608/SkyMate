@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import './AiButton.css'
 import useAppContext from "../../context/AppContext";
 import { useNavigate } from 'react-router-dom';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const WeatherIcon = ({ condition, icon, size = 48 }) => (
     <motion.div
@@ -107,9 +108,9 @@ const HourlyForecast = ({ hours }) => (
     </div>
 );
 
-const AirQualityCard = ({ airQuality }) => (
+const AirQualityCard = ({ airQuality , airAnalysis }) => (
     <GradientCard className="col-span-2">
-        <h3 className="text-2xl font-semibold mb-4 text-blue-800">Air Quality</h3>
+        <h3 className="text-2xl font-semibold mb-4 text-blue-800">Air Quality - {airAnalysis}</h3>
         <div className="grid grid-cols-2 gap-4">
             <WeatherCard title="CO" value={`${airQuality.co.toFixed(2)} µg/m³`} icon={Cloud} />
             <WeatherCard title="NO₂" value={`${airQuality.no2.toFixed(2)} µg/m³`} icon={Cloud} />
@@ -188,8 +189,29 @@ const getBackgroundStyle = (condition) => {
 export default function Weather() {
 
     const data = useLoaderData();
-    const { setData , setAlerts} = useAppContext();
+    const { setData, setAlerts } = useAppContext();
     const navigate = useNavigate();
+    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const [air , setAir] = useState('');
+
+    useEffect(() => {
+
+        const prompt = `Evaluate the air quality based on the following pollutant concentrations: 
+        co - ${data.current.air_quality.co} µg/m³,no2- ${data.current.air_quality.no2} µg/m³ , o3 - ${data.current.air_quality.o3} µg/m³ , so2 - ${data.current.air_quality.so2} µg/m³
+         on the basis of these values. tell me the air quality is good , moderate or poor . give one word ans only on the basis of these values
+        Return one word answer only. do not give any object. give one word ans only
+`;
+
+        const result = async ()=>{
+            console.log(data.current.air_quality.co)
+            const ans = await model.generateContent(prompt);
+            setAir(ans.response.candidates[0].content.parts[0].text);
+            console.log(ans.response.candidates[0].content.parts[0].text);
+        }
+       result()
+        
+    }, [data])
 
     const getSuggestion = () => {
         setData({
@@ -204,9 +226,9 @@ export default function Weather() {
             'Conditon': data.current.condition.text,
             'WindchillTemperature': data.current.windchill_c,
         });
-        navigate('/activity-suggestion');
+        navigate('/energy-saver');
     }
-    
+
     const [selectedDay, setSelectedDay] = useState(0);
     const backgroundStyle = getBackgroundStyle(data.current.condition.text);
 
@@ -362,7 +384,7 @@ export default function Weather() {
                     </section>
 
                     <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <AirQualityCard airQuality={data.current.air_quality} />
+                        <AirQualityCard airQuality={data.current.air_quality} airAnalysis = {air}/>
                         <AstroCard astro={data.forecast.forecastday[selectedDay].astro} />
                     </section>
                 </main>

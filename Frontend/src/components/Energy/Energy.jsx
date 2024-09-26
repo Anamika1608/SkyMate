@@ -28,9 +28,11 @@ function Energy() {
     const { data } = useAppContext();
     const [ans, setAns] = useState('');
     const [activeTab, setActiveTab] = useState('Recipes');
+    const [isLoading, setIsLoading] = useState(false);
     const isLocationDataAvailable = data.Location && data.Region;
 
     const getGroqChatCompletion = async () => {
+        if(!isLocationDataAvailable) return
         return groq.chat.completions.create({
             messages: [
                 {
@@ -58,6 +60,7 @@ Provide the following:
 
 3. *Seasonal Insights*: Offer seasonal energy-saving strategies based on the current season and weather conditions, including daily actions users can take to reduce costs.
 
+Do include always atleast the 2 recieps in each section or category and atleast 1 in energy saving and seasonal insights section.  
 
 Format the response as a JSON object with the following structure:
 {
@@ -81,7 +84,7 @@ Format the response as a JSON object with the following structure:
   }
 }
 
-Important: Return only the JSON object, without any markdown formatting or additional text. Do include always atleast the 2 recieps in each section or category and atleast 1 in energy saving and seasonal insights section.
+Important: Return only the JSON object, without any markdown formatting or additional text.Do not add any heading or text before the json object. only return json object.
 `,
                 },
             ],
@@ -89,6 +92,10 @@ Important: Return only the JSON object, without any markdown formatting or addit
         });
     };
     const main = async () => {
+        if (!isLocationDataAvailable) return;
+
+        setIsLoading(true);
+
         try {
             const chatCompletion = await getGroqChatCompletion();
             const generatedAns = chatCompletion.choices[0]?.message?.content;
@@ -98,15 +105,16 @@ Important: Return only the JSON object, without any markdown formatting or addit
             setAns(parsedActivities);
         } catch (error) {
             console.error('Error fetching Groq completion:', error);
+        } finally {
+            setIsLoading(false)
         }
     };
 
     useEffect(() => {
-        if (data.Location && data.Region) {
+        if (isLocationDataAvailable) {
             main();
         }
-        return;
-    }, [data.Location, data.Region]);
+    }, [data]);
 
     const WeatherIcon = ({ condition }) => {
         switch (condition.toLowerCase()) {
@@ -245,48 +253,58 @@ Important: Return only the JSON object, without any markdown formatting or addit
         ),
     };
 
+    if (!data) {
+        return <div>Loading...</div>;
+    }
+
+    if (!isLocationDataAvailable) {
+        return <div>You have not entered any location</div>;
+    }
+
     return (
-        (isLocationDataAvailable) ?
-            <div className="min-h-screen bg-gradient-to-br from-blue-200 to-green-200 p-6">
-                <motion.div
-                    initial={{ opacity: 0, y: -50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="max-w-7xl mx-auto"
-                >
-                    <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Weather-Driven Lifestyle - {data.Location} , {data.Country}</h1>
+         <div className="min-h-screen bg-gradient-to-br from-blue-200 to-green-200 p-6">
+            <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="max-w-7xl mx-auto"
+            >
+                <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Weather-Driven Lifestyle - {data.Location}, {data.Country}</h1>
 
-                    <div className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-8">
-                        {Object.keys(tabContent).map((tabName) => (
-                            <TabButton
-                                key={tabName}
-                                label={tabName}
-                                isActive={activeTab === tabName}
-                                onClick={() => setActiveTab(tabName)}
-                            />
-                        ))}
+                <div className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-8">
+                    {Object.keys(tabContent).map((tabName) => (
+                        <TabButton
+                            key={tabName}
+                            label={tabName}
+                            isActive={activeTab === tabName}
+                            onClick={() => setActiveTab(tabName)}
+                        />
+                    ))}
+                </div>
+
+                {isLoading ? (
+                    <div className="text-center">
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                            className="inline-block"
+                        >
+                            <svg className="h-12 w-12 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </motion.div>
+                        <p className="mt-4 text-lg font-semibold text-gray-700">Loading content...</p>
                     </div>
-
-                    {ans ? tabContent[activeTab] : (
-                        <div className="text-center">
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                                className="inline-block"
-                            >
-                                <svg className="h-12 w-12 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            </motion.div>
-                            <p className="mt-4 text-lg font-semibold text-gray-700">Loading content...</p>
-                        </div>
-                    )}
-                </motion.div>
-            </div> :
-            <div>
-                You have not entered any location
-            </div>
+                ) : ans ? (
+                    tabContent[activeTab]
+                ) : (
+                    <div className="text-center">
+                        <p className="text-lg font-semibold text-gray-700">No data available</p>
+                    </div>
+                )}
+            </motion.div>
+        </div>
 
 
     );
