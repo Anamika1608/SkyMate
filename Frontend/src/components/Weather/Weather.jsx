@@ -204,7 +204,7 @@ export default function Weather() {
             'Conditon': data.current.condition.text,
             'WindchillTemperature': data.current.windchill_c,
         });
-        navigate('/energy-saver');
+        navigate('/activity-suggestion');
     }
     
     const [selectedDay, setSelectedDay] = useState(0);

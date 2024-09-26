@@ -4,6 +4,14 @@ import useAppContext from "../../context/AppContext";
 import { motion } from 'framer-motion';
 import { Sun, Cloud, Droplet, Wind, PanelTop, Lightbulb, Leaf } from 'lucide-react';
 
+const categoryImages = {
+    family: "/family.jpeg",
+    solo: "/solo.jpeg",
+    'health-conscious': "/healthy.jpeg",
+    budget: "/budget.jpeg",
+    'quick-preparation': "/quick.jpeg",
+};
+
 const categoryIcons = {
     family: <PanelTop className="h-8 w-8 text-indigo-500" />,
     solo: <PanelTop className="h-8 w-8 text-pink-500" />,
@@ -20,6 +28,7 @@ function Energy() {
     const { data } = useAppContext();
     const [ans, setAns] = useState('');
     const [activeTab, setActiveTab] = useState('Recipes');
+    const isLocationDataAvailable = data.Location && data.Region;
 
     const getGroqChatCompletion = async () => {
         return groq.chat.completions.create({
@@ -72,7 +81,7 @@ Format the response as a JSON object with the following structure:
   }
 }
 
-Important: Return only the JSON object, without any markdown formatting or additional text.
+Important: Return only the JSON object, without any markdown formatting or additional text. Do include always atleast the 2 recieps in each section or category and atleast 1 in energy saving and seasonal insights section.
 `,
                 },
             ],
@@ -93,8 +102,11 @@ Important: Return only the JSON object, without any markdown formatting or addit
     };
 
     useEffect(() => {
-        main()
-    }, [])
+        if (data.Location && data.Region) {
+            main();
+        }
+        return;
+    }, [data.Location, data.Region]);
 
     const WeatherIcon = ({ condition }) => {
         switch (condition.toLowerCase()) {
@@ -110,13 +122,45 @@ Important: Return only the JSON object, without any markdown formatting or addit
                 return null;
         }
     };
+    const RecipeCard = ({ category, meals }) => (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+        >
+            <div className="relative h-48 overflow-hidden">
+                <img
+                    src={categoryImages[category]}
+                    alt={category}
+                    className="w-full h-full object-cover transition-transform duration-300 transform hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                    <h4 className="text-2xl font-semibold capitalize text-white p-4 flex items-center">
 
+                        <span className="ml-2">{category.replace('-', ' ')}</span>
+                    </h4>
+                </div>
+            </div>
+            <div className="p-6 space-y-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg ">
+                {meals.map((meal, i) => (
+                    <div key={i} className="border-b border-gray-300 pb-3 last:border-b-0">
+                        <h4 className="font-semibold text-xl text-gray-900 bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+                            {meal.meal}
+                        </h4>
+                        <p className="text-gray-700 mt-2">{meal.description}</p>
+                    </div>
+                ))}
+            </div>
+
+        </motion.div>
+    );
     const TabButton = ({ label, isActive, onClick }) => (
         <button
             onClick={onClick}
             className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 transition-all duration-300 ${isActive
-                    ? 'bg-white shadow text-blue-700 transform scale-105'
-                    : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
+                ? 'bg-white shadow text-blue-700 transform scale-105'
+                : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
                 }`}
         >
             {label}
@@ -127,28 +171,7 @@ Important: Return only the JSON object, without any markdown formatting or addit
         Recipes: (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {ans && ans.recipes && Object.entries(ans.recipes).map(([category, meals], index) => (
-                    <motion.div
-                        key={index}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="bg-gradient-to-br from-orange-100 to-yellow-100 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                    >
-                        <div className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xl font-semibold capitalize text-orange-800">{category.replace('-', ' ')}</h3>
-                                {categoryIcons[category]}
-                            </div>
-                            <div className="space-y-4">
-                                {meals.map((meal, i) => (
-                                    <div key={i} className="border-t border-orange-200 pt-4">
-                                        <h4 className="font-medium text-lg text-orange-700">{meal.meal}</h4>
-                                        <p className="text-orange-600 mt-1">{meal.description}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </motion.div>
+                    <RecipeCard key={index} category={category} meals={meals} />
                 ))}
             </div>
         ),
@@ -182,84 +205,90 @@ Important: Return only the JSON object, without any markdown formatting or addit
         ),
         'Seasonal Insights': (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {ans && ans['seasonal-insights'] && Object.entries(ans['seasonal-insights']).map(([category, insights], index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold capitalize text-purple-800 flex items-center">
-                      <Leaf className="h-6 w-6 mr-2 text-green-500" />
-                      {category.replace('-', ' ')}
-                    </h3>
-                    <WeatherIcon condition={category} />
-                  </div>
-                  <ul className="space-y-2">
-                    {Array.isArray(insights) ? (
-                      insights.map((insight, i) => (
-                        <li key={i} className="text-purple-700 bg-white/50 rounded-lg p-3 shadow-sm">
-                          {typeof insight === 'string' ? insight : insight.tip || JSON.stringify(insight)}
-                        </li>
-                      ))
-                    ) : typeof insights === 'object' ? (
-                      Object.entries(insights).map(([key, value], i) => (
-                        <li key={i} className="text-purple-700 bg-white/50 rounded-lg p-3 shadow-sm">
-                          <strong>{key}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
-                        </li>
-                      ))
-                    ) : (
-                      <li className="text-purple-700 bg-white/50 rounded-lg p-3 shadow-sm">
-                        {JSON.stringify(insights)}
-                      </li>
-                    )}
-                  </ul>
-                </motion.div>
-              ))}
+                {ans && ans['seasonal-insights'] && Object.entries(ans['seasonal-insights']).map(([category, insights], index) => (
+                    <motion.div
+                        key={index}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
+                    >
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-semibold capitalize text-purple-800 flex items-center">
+                                <Leaf className="h-6 w-6 mr-2 text-green-500" />
+                                {category.replace('-', ' ')}
+                            </h3>
+                            <WeatherIcon condition={category} />
+                        </div>
+                        <ul className="space-y-2">
+                            {Array.isArray(insights) ? (
+                                insights.map((insight, i) => (
+                                    <li key={i} className="text-purple-700 bg-white/50 rounded-lg p-3 shadow-sm">
+                                        {typeof insight === 'string' ? insight : insight.tip || JSON.stringify(insight)}
+                                    </li>
+                                ))
+                            ) : typeof insights === 'object' ? (
+                                Object.entries(insights).map(([key, value], i) => (
+                                    <li key={i} className="text-purple-700 bg-white/50 rounded-lg p-3 shadow-sm">
+                                        <strong>{key}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-purple-700 bg-white/50 rounded-lg p-3 shadow-sm">
+                                    {JSON.stringify(insights)}
+                                </li>
+                            )}
+                        </ul>
+                    </motion.div>
+                ))}
             </div>
-          ),
+        ),
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-200 to-green-200 p-6">
-            <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="max-w-7xl mx-auto"
-            >
-                <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Weather-Driven Lifestyle</h1>
+        (isLocationDataAvailable) ?
+            <div className="min-h-screen bg-gradient-to-br from-blue-200 to-green-200 p-6">
+                <motion.div
+                    initial={{ opacity: 0, y: -50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="max-w-7xl mx-auto"
+                >
+                    <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Weather-Driven Lifestyle - {data.Location} , {data.Country}</h1>
 
-                <div className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-8">
-                    {Object.keys(tabContent).map((tabName) => (
-                        <TabButton
-                            key={tabName}
-                            label={tabName}
-                            isActive={activeTab === tabName}
-                            onClick={() => setActiveTab(tabName)}
-                        />
-                    ))}
-                </div>
-
-                {ans ? tabContent[activeTab] : (
-                    <div className="text-center">
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                            className="inline-block"
-                        >
-                            <svg className="h-12 w-12 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </motion.div>
-                        <p className="mt-4 text-lg font-semibold text-gray-700">Loading content...</p>
+                    <div className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-8">
+                        {Object.keys(tabContent).map((tabName) => (
+                            <TabButton
+                                key={tabName}
+                                label={tabName}
+                                isActive={activeTab === tabName}
+                                onClick={() => setActiveTab(tabName)}
+                            />
+                        ))}
                     </div>
-                )}
-            </motion.div>
-        </div>
+
+                    {ans ? tabContent[activeTab] : (
+                        <div className="text-center">
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                className="inline-block"
+                            >
+                                <svg className="h-12 w-12 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </motion.div>
+                            <p className="mt-4 text-lg font-semibold text-gray-700">Loading content...</p>
+                        </div>
+                    )}
+                </motion.div>
+            </div> :
+            <div>
+                You have not entered any location
+            </div>
+
+
     );
 }
 

@@ -1,265 +1,156 @@
-import React, { useState, useEffect } from 'react';
-import Groq from 'groq-sdk';
+import React, { useEffect, useState } from 'react';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import useAppContext from "../../context/AppContext";
-import { motion } from 'framer-motion';
-import { Sun, Cloud, Droplet, Wind, Lightbulb, Leaf } from 'lucide-react';
 
-const categoryImages = {
-  family: "/diet.jpg",
-  solo: "/diet.jpg",
-  healthConscious: "/diet.jpg",
-  budget: "/diet.jpg",
-  quickPreparation: "/diet.jpg",
-};
-
-function Energy() {
-  const groq = new Groq({
-    apiKey: import.meta.env.VITE_GROQ_API_KEY,
-    dangerouslyAllowBrowser: true
-  });
-  const { data } = useAppContext();
-  const [ans, setAns] = useState('');
-  const [activeTab, setActiveTab] = useState('Recipes');
-
-  const getGroqChatCompletion = async () => {
-    return groq.chat.completions.create({
-      messages: [
-        {
-          role: 'user',
-          content: `Based on the following weather and home data, provide a comprehensive overview that includes personalized meal recommendations, energy-saving tips and seasonal advice. Tailor the responses to the given weather conditions, home type, energy bill, and appliances used. Provide actionable insights that are unique to the user's situation, focusing on energy efficiency and improving daily life based on the weather.
-
-Here is the data:
-Location: ${data.Location}
-Region: ${data.Region}
-Country: ${data.Country}
-Current Temperature: ${data.CurrentTemp}°C
-Humidity: ${data.Humidity}%
-Cloud Cover: ${data.CloudCover}%
-Wind Speed: ${data.WindSpeed} km/h
-Condition: ${data.Condition}
-Season: ${data.Season} (e.g., summer, winter)
-Home Type: ${data.HomeType} (e.g., apartment, house)
-Appliances: ${data.Appliances} (e.g., air conditioner, heater, fridge)
-Energy Bill: ${data.EnergyBill}
-
-Provide the following:
-1. *Weather-Driven Recipes*: Suggest meals suitable for the current weather conditions, including family, solo, health-conscious, budget-friendly, and quick-preparation meal options. Consider energy-efficient meal preparation tips.
-   
-2. *Custom Energy Savings Plan*: Provide energy-saving tips for heating, cooling, and appliance usage, tailored to the home type and weather. Include smart home integration if applicable.
-
-3. *Seasonal Insights*: Offer seasonal energy-saving strategies based on the current season and weather conditions, including daily actions users can take to reduce costs.
-
-
-Format the response as a JSON object with the following structure:
-{
-  "recipes": {
-    "family": [{"meal": "Meal Title", "description": "Meal description"}],
-    "solo": [{"meal": "Meal Title", "description": "Meal description"}],
-    "healthConscious": [{"meal": "Meal Title", "description": "Meal description"}],
-    "budget": [{"meal": "Meal Title", "description": "Meal description"}],
-    "quickPreparation": [{"meal": "Meal Title", "description": "Meal description"}]
-  },
-  "energy-savings": {
-    "cooling": [{"tip": "Tip description", "details": "Additional information"}],
-    "heating": [{"tip": "Tip description", "details": "Additional information"}],
-    "appliances": [{"tip": "Tip description", "details": "Additional information"}],
-    "smart-home": [{"tip": "Tip description", "details": "Additional information"}]
-  },
-  "seasonal-insights": {
-    "summer": [{"tip": "Tip description", "details": "Additional information"}],
-    "winter": [{"tip": "Tip description", "details": "Additional information"}],
-    "daily-actions": [{"tip": "Tip description", "details": "Additional information"}]
-  }
-}
-
-Important: Return only the JSON object, without any markdown formatting or additional text.Do not iclude any starting text before the json response.Return JSON only
-`,
-        },
-      ],
-      model: 'llama3-8b-8192',
-    });
-  };
-  const main = async () => {
-    try {
-      const chatCompletion = await getGroqChatCompletion();
-      const generatedAns = chatCompletion.choices[0]?.message?.content;
-      const cleanedResponse = generatedAns.replace(/json|/g, '').trim();
-      const parsedActivities = JSON.parse(cleanedResponse);
-      console.log(parsedActivities)
-      setAns(parsedActivities);
-    } catch (error) {
-      console.error('Error fetching Groq completion:', error);
-    }
-  };
-
-  useEffect(()=>{
-    main()
-  },[])
-
-  const WeatherIcon = ({ condition }) => {
-    switch (condition.toLowerCase()) {
-      case 'sunny':
-        return <Sun className="h-8 w-8 text-yellow-400" />;
-      case 'cloudy':
-        return <Cloud className="h-8 w-8 text-gray-400" />;
-      case 'rainy':
-        return <Droplet className="h-8 w-8 text-blue-400" />;
-      case 'windy':
-        return <Wind className="h-8 w-8 text-teal-400" />;
-      default:
-        return null;
-    }
-  };
-
-  const TabButton = ({ label, isActive, onClick }) => (
-    <button
-      onClick={onClick}
-      className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 transition-all duration-300 ${
-        isActive
-          ? 'bg-white shadow text-indigo-700 transform scale-105'
-          : 'text-indigo-100 hover:bg-white/[0.12] hover:text-white'
-      }`}
-    >
-      {label}
-    </button>
-  );
-
-  const tabContent = {
-    Recipes: (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {ans && ans.recipes && Object.entries(ans.recipes).map(([category, meals], index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-          >
-            {console.log(category)}
-            <div className="p-6">
-              <h3 className="text-xl font-semibold capitalize text-indigo-800 mb-4">{category.replace('-', ' ')}</h3>
-              <div className="space-y-4">
-                {meals.map((meal, i) => (
-                  <div key={i} className="border-t border-indigo-100 pt-4">
-                    <h4 className="font-medium text-lg text-indigo-700">{meal.meal}</h4>
-                    <p className="text-indigo-600 mt-1">{meal.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        ))}
+import { Heart, Star, ThumbsUp, Sun, Users, Umbrella, Clock, MapPin, Thermometer, Droplets, Cloud, Wind, Sunrise, Sunset } from 'lucide-react';
+const ActivityCard = ({ title, content, icon: Icon }) => (
+  <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border-l-4 border-indigo-500">
+    <div className="flex items-center mb-3">
+      <div className="bg-indigo-100 p-2 rounded-full mr-3">
+        <Icon className="w-6 h-6 text-indigo-600" />
       </div>
-    ),
-    'Energy Savings': (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {ans && ans['energy-savings'] && Object.entries(ans['energy-savings']).map(([category, tips], index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
-          >
-            <h3 className="text-xl font-semibold mb-4 capitalize text-emerald-800 flex items-center">
-              <Lightbulb className="h-6 w-6 mr-2 text-yellow-500" />
-              {category.replace('-', ' ')}
-            </h3>
-            <ul className="space-y-2">
-              {tips.map((tip, i) => (
-                <li key={i} className="flex items-start bg-white/50 rounded-lg p-3 shadow-sm">
-                  <svg className="h-6 w-6 text-emerald-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-emerald-700">{tip.tip}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        ))}
-      </div>
-    ),
-    'Seasonal Insights': (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {ans && ans['seasonal-insights'] && Object.entries(ans['seasonal-insights']).map(([category, insights], index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold capitalize text-amber-800 flex items-center">
-                <Leaf className="h-6 w-6 mr-2 text-green-500" />
-                {category.replace('-', ' ')}
-              </h3>
-              <WeatherIcon condition={category} />
-            </div>
-            <ul className="space-y-2">
-              {Array.isArray(insights) ? (
-                insights.map((insight, i) => (
-                  <li key={i} className="text-amber-700 bg-white/50 rounded-lg p-3 shadow-sm">
-                    {typeof insight === 'string' ? insight : insight.tip || JSON.stringify(insight)}
-                  </li>
-                ))
-              ) : typeof insights === 'object' ? (
-                Object.entries(insights).map(([key, value], i) => (
-                  <li key={i} className="text-amber-700 bg-white/50 rounded-lg p-3 shadow-sm">
-                    <strong>{key}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
-                  </li>
-                ))
-              ) : (
-                <li className="text-amber-700 bg-white/50 rounded-lg p-3 shadow-sm">
-                  {JSON.stringify(insights)}
-                </li>
-              )}
-            </ul>
-          </motion.div>
-        ))}
-      </div>
-    ),
-  };
+      <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+    </div>
+    <p className="text-gray-600">{content}</p>
+  </div>
+);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-200 to-purple-200 p-6">
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-7xl mx-auto"
-      >
-        <h1 className="text-4xl font-bold text-center mb-8 text-indigo-800">Weather-Driven Lifestyle</h1>
-        
-        <div className="flex space-x-1 rounded-xl bg-indigo-900/20 p-1 mb-8">
-          {Object.keys(tabContent).map((tabName) => (
-            <TabButton
-              key={tabName}
-              label={tabName}
-              isActive={activeTab === tabName}
-              onClick={() => setActiveTab(tabName)}
-            />
-          ))}
-        </div>
-
-        {ans ? tabContent[activeTab] : (
-          <div className="text-center">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="inline-block"
-            >
-              <svg className="h-12 w-12 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            </motion.div>
-            <p className="mt-4 text-lg font-semibold text-indigo-700">Loading content...</p>
+const WeatherInfo = ({ data }) => (
+  <div className="bg-gray-100 text-white p-6 rounded-lg shadow-lg mb-8">
+    <h2 className="text-2xl font-bold text-black mb-4 text-center">Current Weather</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[
+        { icon: MapPin, label: 'Location', value: `${data.Location}, ${data.Country}` },
+        { icon: Thermometer, label: 'Temperature', value: `${data.CurrentTemp}°C` },
+        { icon: Droplets, label: 'Humidity', value: `${data.Humidity}%` },
+        { icon: Cloud, label: 'Cloud Cover', value: `${data.CloudCover}%` },
+        { icon: Sun, label: 'UV Index', value: data.UV },
+        { icon: Wind, label: 'Wind Chill', value: `${data.WindchillTemperature}°C` },
+      ].map((item, index) => (
+        <div key={index} className="bg-[#c23ff2] bg-opacity-20 p-4 rounded-lg shadow-md flex items-center transition-transform duration-300 transform hover:scale-105">
+          <item.icon className="w-8 h-8 mr-4 text-blue-500" />
+          <div className=''>
+            <p className="text-sm  text-[#6a626e] opacity-80">{item.label}</p>
+            <p className="text-lg text-[#493e4d] font-semibold">{item.value}</p>
           </div>
-        )}
-      </motion.div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+const ActivitySuggestion = () => {
+  const [activities, setActivities] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { data } = useAppContext();
+  const hasLocationData = data?.Location && data?.Country;
+
+  useEffect(() => {
+    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+    if (!hasLocationData) return;
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const prompt = `Based on the following weather data, suggest personalized and unique outdoor activities that are safe, enjoyable, and suitable for the given conditions. Consider the temperature, humidity, UV index, and other factors such as cloud cover, windchill, and heat index. Additionally, provide safety tips or preparations that someone should take for each activity. Ensure the activities are creative and tailored for different types of users (e.g., solo, families, adventure seekers, relaxation).
+  Here is the current weather data:
+  Location: ${data.Location}
+  Region: ${data.Region}
+  Country: ${data.Country}
+  Current Temperature: ${data.CurrentTemp}°C
+  Humidity: ${data.Humidity}%
+  Cloud Cover: ${data.CloudCover}%
+  UV Index: ${data.UV}
+  Heat Index: ${data.HeatIndex}°C
+  Condition: ${data.Condition}
+  Windchill Temperature: ${data.WindchillTemperature}°C
+  Suggest multiple activities for different user preferences and scenarios such as:
+  Activities for solo individuals, families, and groups
+  Adventurous and relaxing options
+  Time-of-day-specific recommendations (e.g., early morning, afternoon, evening)
+  Ideas for both short and long durations
+  Provide an estimate of how the weather might impact the activities.
+  Please also include alternative indoor activities for weather conditions that may not be ideal for outdoor plans.
+  Do not include more than 3 activities in each section.
+  Format the response as a JSON object with the following structure:
+  {
+    "solo": [{"title": "Activity Title", "description": "Activity description"}],
+    "family": [{"title": "Activity Title", "description": "Activity description"}],
+    "group": [{"title": "Activity Title", "description": "Activity description"}],
+    "adventure": [{"title": "Activity Title", "description": "Activity description"}],
+    "relaxation": [{"title": "Activity Title", "description": "Activity description"}],
+    "indoor": [{"title": "Activity Title", "description": "Activity description"}]
+  }
+  
+  Important: Return only the JSON object, without any markdown formatting or additional text.`;
+    const fetchResult = async () => {
+      try {
+        const result = await model.generateContent(prompt);
+        const responseText = result.response.text();
+        const cleanedResponse = responseText.replace(/json|/g, '').trim();
+        const parsedActivities = JSON.parse(cleanedResponse);
+        setActivities(parsedActivities);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching AI response:", error);
+        setActivities(null);
+        setError("There was an error generating activity suggestions. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchResult();
+  }, [data, hasLocationData]);
+
+  const activityTypes = [
+    { key: 'solo', icon: Sun, title: 'Solo Adventures', bgColor: 'bg-yellow-100 bg-gradient-to-r from-yellow-100 to-yellow-200' },
+    { key: 'family', icon: Users, title: 'Family Fun', bgColor: 'bg-green-100 bg-gradient-to-r from-green-100 to-green-300' },
+    { key: 'group', icon: Users, title: 'Group Excitement', bgColor: 'bg-blue-100 bg-gradient-to-r from-blue-100 to-blue-300' },
+    { key: 'adventure', icon: MapPin, title: 'Thrill Seekers', bgColor: 'bg-red-100 bg-gradient-to-r from-red-100 to-red-300' },
+    { key: 'relaxation', icon: Umbrella, title: 'Relaxation Station', bgColor: 'bg-purple-100 bg-gradient-to-r from-purple-100 to-purple-300' },
+    { key: 'indoor', icon: Clock, title: 'Indoor Escapades', bgColor: 'bg-indigo-100 bg-gradient-to-r from-indigo-100 to-indigo-300' },
+  ];
+  return (
+    <div className="max-w-6xl mx-auto p-6 rounded-lg ">
+      <h1 className="text-4xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">
+        Weather-Inspired Activity Ideas
+      </h1>
+      {(!hasLocationData) ?
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+          <p className="font-bold">No Location Data</p>
+          <p className='text-black'>You have not entered a location. Please provide your location to get activity suggestions.</p>
+        </div>
+        : <div>
+          <WeatherInfo data={data} />
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
+            </div>
+          ) : error ? (
+            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+              <p className="font-bold">Error</p>
+              <p>{error}</p>
+            </div>
+          ) : activities ? (
+            <div className="space-y-12">
+              {activityTypes.map(({ key, icon: Icon, title, bgColor }) => (
+                <div key={key} className={`${bgColor} p-6 rounded-lg shadow-md hover:shadow-lg transition-transform duration-300 transform hover:-translate-y-1`}>
+                  <div className="flex items-center mb-4">
+                    <Icon className="w-8 h-8 mr-3 text-indigo-600" />
+                    <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {activities[key]?.map((activity, index) => (
+                      <ActivityCard key={index} title={activity.title} content={activity.description} icon={Icon} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      }
+
+
     </div>
   );
-}
-
-export default Energy;
+};
+export default ActivitySuggestion;
