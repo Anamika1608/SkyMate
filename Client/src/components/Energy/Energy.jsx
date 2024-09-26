@@ -132,9 +132,7 @@ Important: Return only the JSON object, without any markdown formatting or addit
     };
     const RecipeCard = ({ category, meals }) => (
         <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
+            
             className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
         >
             <div className="relative h-48 overflow-hidden">

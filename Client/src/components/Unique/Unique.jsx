@@ -33,7 +33,7 @@ const features = [
 
 export function WobbleCardDemo() {
   return (
-    <div className="sm:flex gap-4 sm:max-w-7xl mx-auto w-full ">
+    <div className="sm:flex gap-4 sm:max-w-7xl mx-auto mt-10 w-full ">
       {features.map((feature, index) => (
         <Link to= {feature.link} className="col-span-1 sm:min-h-[300px] mb-4 cursor-pointer">
           <WobbleCard containerClassName="" >
