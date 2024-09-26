@@ -160,7 +160,7 @@ function PostDetail() {
               />
               <button
                 type="submit"
-                className="self-end bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition"
+                className="self-end bg-indigo-500 text-white hover:text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition"
               >
                 Submit
               </button>
@@ -204,7 +204,7 @@ function PostDetail() {
                     />
                     <button
                       type="submit"
-                      className="bg-indigo-500 text-white px-4 py-1 rounded-md hover:bg-indigo-600 transition"
+                      className="bg-indigo-500 text-white px-4 py-1 hover:text-white rounded-md hover:bg-indigo-600 transition"
                     >
                       Reply
                     </button>

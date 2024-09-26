@@ -108,7 +108,7 @@ const HourlyForecast = ({ hours }) => (
     </div>
 );
 
-const AirQualityCard = ({ airQuality , airAnalysis }) => (
+const AirQualityCard = ({ airQuality, airAnalysis }) => (
     <GradientCard className="col-span-2">
         <h3 className="text-2xl font-semibold mb-4 text-blue-800">Air Quality - {airAnalysis}</h3>
         <div className="grid grid-cols-2 gap-4">
@@ -193,7 +193,7 @@ export default function Weather() {
     const navigate = useNavigate();
     const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const [air , setAir] = useState('');
+    const [air, setAir] = useState('');
 
     useEffect(() => {
 
@@ -203,14 +203,14 @@ export default function Weather() {
         Return one word answer only. do not give any object. give one word ans only
 `;
 
-        const result = async ()=>{
+        const result = async () => {
             console.log(data.current.air_quality.co)
             const ans = await model.generateContent(prompt);
             setAir(ans.response.candidates[0].content.parts[0].text);
             console.log(ans.response.candidates[0].content.parts[0].text);
         }
-       result()
-        
+        result()
+
     }, [data])
 
     const getSuggestion = () => {
@@ -226,9 +226,23 @@ export default function Weather() {
             'Conditon': data.current.condition.text,
             'WindchillTemperature': data.current.windchill_c,
         });
+        navigate('/activity-suggestion'); 
+    }
+    const getEnergy = () => {
+        setData({
+            'Location': data.location.name,
+            'Region': data.location.region,
+            'Country': data.location.country,
+            'CurrentTemp': data.current.temp_c,
+            'Humidity': data.current.humidity,
+            'CloudCover': data.current.cloud,
+            'UV': data.current.uv,
+            'HeatIndex': data.current.heatindex_c,
+            'Conditon': data.current.condition.text,
+            'WindchillTemperature': data.current.windchill_c,
+        });
         navigate('/energy-saver');
     }
-
     const [selectedDay, setSelectedDay] = useState(0);
     const backgroundStyle = getBackgroundStyle(data.current.condition.text);
 
@@ -253,10 +267,97 @@ export default function Weather() {
                         <div>
                             <button
                                 className="shadow-md px-7 py-3 text-lg sm:text-xl bg-[#6c3ff2] text-white rounded-[12px] hover:bg-[#3437eb] transition duration-300 hover:text-white hover:text-medium"
+                                onClick={() => getEnergy()}
+                            >
+                                <div className='flex flex-col justify-center items-center sm:flex-row'>
+                                    <span className="sm:ml-2">Get Recipe tailored to weather</span>
+                                    <div class="star-1">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-2">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-3">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-4">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-5">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="star-6">
+                                        <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+                                            style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
+                                            version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                                            <defs></defs>
+                                            <g id="Layer_x0020_1">
+                                                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                                                <path
+                                                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                                                    class="fil0"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </button>
+                            <br />
+                            <button
+                                className="mt-4 shadow-md px-7 py-3 text-lg sm:text-xl bg-[#6c3ff2] text-white rounded-[12px] hover:bg-[#3437eb] transition duration-300 hover:text-white hover:text-medium"
                                 onClick={() => getSuggestion()}
                             >
-                                <div className='flex flex-col justify-center items-center sm:flex-row'>      
-                                    <span className="sm:ml-2">Get Recipe tailored to weather</span>
+                                <div className='flex flex-col justify-center items-center sm:flex-row'>
+                                    <span className="sm:ml-2">AI based activity suggestion</span>
                                     <div class="star-1">
                                         <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
                                             style={{ shapeRendering: "geometricPrecision", textRendering: "geometricPrecision", imageRendering: "optimizeQuality", fillRule: "evenodd", clipRule: "evenodd" }}
@@ -383,7 +484,7 @@ export default function Weather() {
                     </section>
 
                     <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <AirQualityCard airQuality={data.current.air_quality} airAnalysis = {air}/>
+                        <AirQualityCard airQuality={data.current.air_quality} airAnalysis={air} />
                         <AstroCard astro={data.forecast.forecastday[selectedDay].astro} />
                     </section>
                 </main>
