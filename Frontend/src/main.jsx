@@ -45,7 +45,7 @@ const router = createBrowserRouter(
       <Route path='post/:id' element={<PostDetail />} />
       <Route path='upload' element={<UploadForm />} />
       <Route path='profile' element={<Dashboard />} />
-      <Route path='activity-suggestion' element={<ActivitySuggestion />} />
+      <Route path='activity-suggestion' element={<ActivitySuggestion />}  />
       <Route path='energy-saver' element={<Energy />} />
       <Route loader={WeatherGen}  path='weather' element={<WeatherPage/>} />
     </Route>

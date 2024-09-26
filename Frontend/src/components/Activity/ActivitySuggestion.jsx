@@ -27,7 +27,7 @@ const WeatherInfo = ({ data }) => (
         { icon: Sun, label: 'UV Index', value: data.UV },
         { icon: Wind, label: 'Wind Chill', value: `${data.WindchillTemperature}°C` },
       ].map((item, index) => (
-        <div key={index} className="bg-[#c23ff2] bg-opacity-20 p-4 rounded-lg shadow-md flex items-center transition-transform duration-300 transform hover:scale-105">
+        <div key={index} className="bg-[#ebf5a9] bg-opacity-75 p-4 rounded-lg shadow-md flex items-center transition-transform duration-300 transform hover:scale-105">
           <item.icon className="w-8 h-8 mr-4 text-blue-500" />
           <div className=''>
             <p className="text-sm  text-[#6a626e] opacity-80">{item.label}</p>
@@ -105,13 +105,14 @@ const ActivitySuggestion = () => {
     { key: 'family', icon: Users, title: 'Family Fun', bgColor: 'bg-green-100 bg-gradient-to-r from-green-100 to-green-300' },
     { key: 'group', icon: Users, title: 'Group Excitement', bgColor: 'bg-blue-100 bg-gradient-to-r from-blue-100 to-blue-300' },
     { key: 'adventure', icon: MapPin, title: 'Thrill Seekers', bgColor: 'bg-red-100 bg-gradient-to-r from-red-100 to-red-300' },
-    { key: 'relaxation', icon: Umbrella, title: 'Relaxation Station', bgColor: 'bg-purple-100 bg-gradient-to-r from-purple-100 to-purple-300' },
+    { key: 'relaxation', icon: Umbrella, title: 'Relaxation Station', bgColor: 'bg-amber-100 bg-gradient-to-r from-amber-100 to-amber-400' },
     { key: 'indoor', icon: Clock, title: 'Indoor Escapades', bgColor: 'bg-indigo-100 bg-gradient-to-r from-indigo-100 to-indigo-300' },
   ];
   return (
-    <div className="max-w-6xl mx-auto p-6 rounded-lg ">
-      <h1 className="text-4xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">
+    <div className=" mx-auto p-6 rounded-lg " style={{ backgroundImage: "url('/bg_Texture.avif')" }} >
+      <h1 className="text-4xl font-bold text-center mb-8 text-black">
         Weather-Inspired Activity Ideas
+       
       </h1>
       {(!hasLocationData) ?
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
