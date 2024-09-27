@@ -8,11 +8,12 @@ function Gallery() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
   const [savedPosts, setSavedPosts] = useState([]);
+  const url = import.meta.env.VITE_BACKEND_URL
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/get_user', {
+        const response = await axios.get(`${url}/get_user`, {
           withCredentials: true,
         });
         setUser(response.data);
@@ -27,7 +28,7 @@ function Gallery() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/posts');
+        const response = await axios.get(`${url}/posts`);
         setPosts(response.data);
       } catch (error) {
         setError('Failed to fetch posts');
@@ -43,7 +44,7 @@ function Gallery() {
 
   const handleSave = async (postId) => {
     try {
-      const response = await axios.put('http://localhost:3000/save_my_post',
+      const response = await axios.put(`${url}/save_my_post`,
         {
           postId
         },
@@ -60,7 +61,7 @@ function Gallery() {
   const handleUnsave = async (postId) => {
     try {
       const response = await axios.put(
-        'http://localhost:3000/unsave_my_post',
+        `${url}/unsave_my_post`,
         { postId },
         { withCredentials: true }
       );

@@ -9,13 +9,14 @@ const Dashboard = () => {
   const [editingPostId, setEditingPostId] = useState(null);
   const [caption, setCaption] = useState('');
   const [savedPosts, setSavedPosts] = useState(null);
+  const url = import.meta.env.VITE_BACKEND_URL
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/get_user', {
+        const response = await axios.get(`${url}/get_user`, {
           withCredentials: true,
         });
         console.log(response.data);
@@ -34,7 +35,7 @@ const Dashboard = () => {
 
     const getUserPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/get_my_posts/${user.id}`,
+        const response = await axios.get(`${url}/get_my_posts/${user.id}`,
           { withCredentials: true }
         );
         console.log(response.data);
@@ -50,7 +51,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const savedPost = async () => {
-      const response = await axios.get(`http://localhost:3000/get_saved_post/${user.id}`, {
+      const response = await axios.get(`${url}/get_saved_post/${user.id}`, {
         withCredentials: true,
       })
       setSavedPosts(response.data);
@@ -69,7 +70,7 @@ const Dashboard = () => {
 
   const handleDelete = async (postId) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/delete_post/${postId}`,
+      const response = await axios.delete(`${url}/delete_post/${postId}`,
         { withCredentials: true }
       );
       console.log("post deleted");
@@ -86,7 +87,7 @@ const Dashboard = () => {
     try {
       console.log(caption);
       console.log(postId);
-      const response = await axios.put(`http://localhost:3000/edit_caption/${postId}`,
+      const response = await axios.put(`${url}/edit_caption/${postId}`,
         { caption },
         {
           withCredentials: true

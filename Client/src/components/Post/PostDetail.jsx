@@ -10,10 +10,11 @@ function PostDetail() {
   const [allComments, setAllComments] = useState([]);
   const [replyingTo, setReplyingTo] = useState(null);
   const [reply, setReply] = useState('');
-
+  const url = import.meta.env.VITE_BACKEND_URL
+  
   const fetchComments = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/getComment?postId=${id}`);
+      const response = await axios.get(`${url}/getComment?postId=${id}`);
       console.log('Fetched comments:', response.data);
       setAllComments(response.data);
     } catch (error) {
@@ -29,7 +30,7 @@ function PostDetail() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/posts/${id}`);
+        const response = await axios.get(`${url}/posts/${id}`);
         setPost(response.data);
       } catch (error) {
         console.error('Failed to fetch post:', error);
@@ -43,7 +44,7 @@ function PostDetail() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        'http://localhost:3000/addComment',
+        `${url}/addComment`,
         { comment, postId: id },
         { withCredentials: true }
       );
@@ -98,7 +99,7 @@ function PostDetail() {
 
     try {
       await axios.post(
-        'http://localhost:3000/addReply',
+        `${url}/addReply`,
         { reply: replyText, commentId },
         { withCredentials: true }
       );

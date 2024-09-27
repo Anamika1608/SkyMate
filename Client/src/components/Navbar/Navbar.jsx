@@ -8,6 +8,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn, location, setLocation } = useAppContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const url = import.meta.env.VITE_BACKEND_URL
 
   useEffect(() => {
     checkLoginStatus();
@@ -15,7 +16,7 @@ export default function Navbar() {
 
   const checkLoginStatus = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/check_auth", {
+      const response = await axios.post(`${url}/check_auth`, {
         withCredentials: true,
       });
       setIsLoggedIn(response.data.isLoggedIn);
@@ -28,7 +29,7 @@ export default function Navbar() {
   const handleLoginLogout = async () => {
     if (isLoggedIn) {
       try {
-        const response = await axios.get("http://localhost:3000/logout", {
+        const response = await axios.get(`${url}/logout`, {
           withCredentials: true,
         });
         if (response.status === 200) {

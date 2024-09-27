@@ -11,12 +11,13 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_BACKEND_URL
 
   const registerUser = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/register",
+        `${url}/register`,
         { name, email, password },
         { withCredentials: true }
       );

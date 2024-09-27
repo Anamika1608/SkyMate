@@ -11,11 +11,12 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
+  const url = import.meta.env.VITE_BACKEND_URL
+  
   const responseGoogle = async (authResult) => {
     try {
       if (authResult['code']) {
-        const response = await axios.post(`http://localhost:3000/googleLogin?code=${authResult['code']}`);
+        const response = await axios.post(`${url}/googleLogin?code=${authResult['code']}`);
         if (response) {
           setIsLoggedIn(true);
           navigate('/weather-gallery')
@@ -34,7 +35,7 @@ export default function Login() {
 
   const loginUser = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/login", { email, password }, { withCredentials: true });
+      const response = await axios.post(`${url}/login`, { email, password }, { withCredentials: true });
       if (response) {
         setIsLoggedIn(true);
         navigate('/weather-gallery')

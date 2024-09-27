@@ -8,7 +8,8 @@ function UploadForm() {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-
+  const url = import.meta.env.VITE_BACKEND_URL
+  
   const handleChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -42,7 +43,7 @@ function UploadForm() {
     try {
       const imageUrl = await uploadToCloudinary(file);
       const response = await axios.post(
-        'http://localhost:3000/upload',
+        `${url}/upload`,
         {
           image: imageUrl,
           caption,

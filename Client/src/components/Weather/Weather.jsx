@@ -266,7 +266,7 @@ export default function Weather() {
                         </div>
                         <div>
                             <button
-                                className="shadow-md px-7 py-3 text-lg sm:text-xl bg-[#6c3ff2] text-white rounded-[12px] hover:bg-[#3437eb] transition duration-300 hover:text-white hover:text-medium"
+                                className="shadow-md px-7 py-3 text-md sm:text-xl bg-[#6c3ff2] text-white rounded-[12px] hover:bg-[#3437eb] transition duration-300 hover:text-white hover:text-medium"
                                 onClick={() => getEnergy()}
                             >
                                 <div className='flex flex-col justify-center items-center sm:flex-row'>
