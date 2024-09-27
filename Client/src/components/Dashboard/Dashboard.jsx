@@ -115,7 +115,7 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-teal-800">Welcome, {user.name}</h1>
           <button
             onClick={openForm}
-            className="bg-yellow-400 hover:bg-yellow-300 text-teal-900 font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+            className="bg-yellow-400 sm:text-xl text-sm hover:bg-yellow-300 text-teal-900 font-bold py-2 px-6 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
           >
             Add New Post
           </button>

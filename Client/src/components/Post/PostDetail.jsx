@@ -132,7 +132,7 @@ function PostDetail() {
             />
             <div className="ml-4">
               <p className="text-lg font-semibold">{post.author?.name || 'Anonymous'}</p>
-              <p className="text-gray-500 text-sm">Posted on {new Date(post.created_at).toDateString()}</p>
+            
             </div>
           </div>
           {/* Image */}

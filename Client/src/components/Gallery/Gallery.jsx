@@ -65,14 +65,14 @@ function Gallery() {
         { withCredentials: true }
       );
       console.log(response);
-      
+
       setSavedPosts((prevSavedPosts) => prevSavedPosts.filter((id) => id !== postId));
-  
+
     } catch (error) {
       console.log("Error in unsaving post - ", error);
     }
   };
-  
+
 
   return (
     <div className="p-4">
@@ -111,8 +111,8 @@ function Gallery() {
               <p className="text-blue-700 font-medium text-lg tracking-wide">
                 {post.caption}
               </p>
-         
-              {post.author._id!== user?.id && (
+
+              {post.author?._id !== user?.id && (
                 savedPosts.includes(post._id) ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -133,6 +133,7 @@ function Gallery() {
                   </svg>
                 )
               )}
+
             </div>
           </div>
         ))}

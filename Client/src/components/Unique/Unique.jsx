@@ -35,8 +35,8 @@ export function WobbleCardDemo() {
   return (
     <div className="sm:flex gap-4 sm:max-w-7xl mx-auto mt-10 w-full ">
       {features.map((feature, index) => (
-        <Link to= {feature.link} className="col-span-1 sm:min-h-[300px] mb-4 cursor-pointer">
-          <WobbleCard containerClassName="" >
+ 
+          <WobbleCard containerClassName="col-span-1 sm:min-h-[300px] mb-4 cursor-pointer" >
             <div className="text-4xl pb-3 -mt-9">{feature.icon}</div>
             <h2 className="max-w-80 text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
               {feature.title}
@@ -45,7 +45,7 @@ export function WobbleCardDemo() {
               {feature.description}
             </p>
           </WobbleCard>
-        </Link>
+       
 
       ))}
     </div>
