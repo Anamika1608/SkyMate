@@ -1,4 +1,4 @@
-# WeatherWise: Smart Weather & Community Platform
+# SkyMate: Smart Weather & Community Platform
 
 A personalized weather application that goes beyond basic forecasts to provide lifestyle recommendations, energy-saving tips, and a community platform for weather-related discussions.
 
