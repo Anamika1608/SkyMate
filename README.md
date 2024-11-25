@@ -4,20 +4,20 @@ A personalized weather application that goes beyond basic forecasts to provide l
 
 ## 🌟 Features
 
-### Weather Information
-- 3-day detailed weather forecasts
-- Real-time air quality monitoring
-- Weather-based activity recommendations
-- Customized energy conservation tips
-- Weather-appropriate recipe suggestions
-
-### Community Platform
-- User authentication & authorization
-- Create and share weather-related posts
-- Bookmark favorite posts
-- Interact with community content
-- Personalized user profiles
-
+### Weather Information 🌦️
+- 3-day detailed weather forecasts 📅
+- Real-time air quality monitoring 🌫️
+- Weather-based activity recommendations 🏃‍♂️
+- Customized energy conservation tips ⚡
+- Weather-appropriate recipe suggestions 🍲
+  
+### Community Platform 🤝
+- User authentication & authorization 🔑
+- Create and share weather-related posts 📝
+- Bookmark favorite posts 📚
+- Interact with community content 💬
+- Personalized user profiles 👤
+  
 ## Technologies
 
 - **Frontend:**
@@ -54,7 +54,7 @@ npm >= 6.x
 
 1. Clone the repository
 ```bash
-git clone https://github.com/Anamika1608/SkyMate
+git clone https://github.com/Anamika1608/SkyMate.git
 cd SkyMate
 ```
 
