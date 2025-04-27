@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useAppContext from "../../context/AppContext";
 import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { isLoggedIn, setIsLoggedIn, location, setLocation } = useAppContext();
+  const location = useLocation();
+  const { isLoggedIn, setIsLoggedIn, location: searchLocation, setLocation } = useAppContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const url = import.meta.env.VITE_BACKEND_URL
+  const url = import.meta.env.VITE_BACKEND_URL;
+  
+  const isHomePage = location.pathname === "/" || location.pathname === "/home";
 
   useEffect(() => {
     checkLoginStatus();
@@ -48,15 +51,19 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const navbarClass = isHomePage 
+    ? "p-4 bg-transparent" 
+    : "p-4 bg-[#dae9f5] shadow-md";
+
   return (
-    <nav className="shadow-md bg-[#dae9f5] p-4">
+    <nav className={navbarClass}>
       <div className="container mx-auto">
         <div className="flex items-center justify-between">
           <a className="text-2xl font-medium text-blue-700 sm:text-3xl" href="/">
             SkyMate
           </a>
           <div className="hidden md:flex items-center space-x-4">
-            <SearchBar location={location} setLocation={setLocation} navigate={navigate} />
+            <SearchBar location={searchLocation} setLocation={setLocation} navigate={navigate} />
             <LoginButton isLoggedIn={isLoggedIn} handleLoginLogout={handleLoginLogout} />
             {isLoggedIn && <ProfileIcon navigate={navigate} />}
           </div>
@@ -67,7 +74,7 @@ export default function Navbar() {
       </div>
       {isMenuOpen && (
         <div className="md:hidden mt-4">
-          <SearchBar location={location} setLocation={setLocation} navigate={navigate} />
+          <SearchBar location={searchLocation} setLocation={setLocation} navigate={navigate} />
           <div className="mt-4 flex flex-col items-center space-y-4">
             <LoginButton isLoggedIn={isLoggedIn} handleLoginLogout={handleLoginLogout} />
             {isLoggedIn && <ProfileIcon navigate={navigate} />}
