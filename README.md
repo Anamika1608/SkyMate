@@ -21,7 +21,19 @@ A personalized weather application that goes beyond basic forecasts to provide l
 - Bookmark favorite posts 📚
 - Interact with community content 💬
 - Personalized user profiles 👤
-  
+
+  ---
+
+## Screenshots
+
+### Real-time weather forecasting
+![Screenshot 1](Client/public/current-weather.png)  
+
+![Screenshot 2](Client/public/hourly-forecasts.png)  
+
+![Screenshot 3](Client/public/air-quality.png)  
+
+
 ## Technologies
 
 - **Frontend:**
