@@ -2,6 +2,10 @@
 
 A personalized weather application that goes beyond basic forecasts to provide lifestyle recommendations, energy-saving tips, and a community platform for weather-related discussions.
 
+## 🎥 Demo Video (click to play)
+
+[![Watch the demo](Client/public/skymate-homepage.png)](https://drive.google.com/file/d/1xr3n5NggrCCXnj8NGZDdhhqiCYlXkeX0/view)
+
 ## 🌟 Features
 
 ### Weather Information 🌦️
