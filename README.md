@@ -41,6 +41,18 @@ A personalized weather application that goes beyond basic forecasts to provide l
 
 ![Screenshot 3](Client/public/seasonal-insights.png)  
 
+![Screenshot 1](Client/public/activity-suggestion.png)  
+
+
+### Community engagements
+  ![Screenshot 1](Client/public/all-posts.png)  
+  ![Screenshot 1](Client/public/profile-details.png)  
+  ![Screenshot 1](Client/public/add-comments.png)  
+  ![Screenshot 1](Client/public/create-post.png)  
+  ![Screenshot 1](Client/public/created-post-on-feed.png)  
+  
+
+
 ## Technologies
 
 - **Frontend:**
