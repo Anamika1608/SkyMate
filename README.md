@@ -33,6 +33,13 @@ A personalized weather application that goes beyond basic forecasts to provide l
 
 ![Screenshot 3](Client/public/air-quality.png)  
 
+### Suggestions on current weather forecasting
+
+![Screenshot 1](Client/public/recipe-ideas.png)  
+
+![Screenshot 2](Client/public/energy-savings.png)  
+
+![Screenshot 3](Client/public/seasonal-insights.png)  
 
 ## Technologies
 
